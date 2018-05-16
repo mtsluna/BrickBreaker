@@ -6,6 +6,8 @@
 package main;
 import Interacciones.Colisiones;
 import Interacciones.Teclado;
+import ScoreAndTimer.SaveScore;
+import ScoreAndTimer.Timer;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -92,9 +94,16 @@ public class Ventana extends JFrame implements Runnable{
         }
         else {
             if (dato == 2){
-                System.out.println("Hola");
                 xPaleta = xPaleta - 13;
                 System.out.println(xPaleta);
+            }
+            else{
+                if (dato == 3){
+                    ejecutar = false;
+                }
+                else{
+                    
+                }
             }
         }
         dato = -1;
@@ -130,6 +139,10 @@ public class Ventana extends JFrame implements Runnable{
         }
     }
     
+    //Uso del timer
+    int [] tt = {0,0,0};
+    Timer tm = new Timer(tt);
+    
     private void dibujar(){
         buffer = canvas.getBufferStrategy();
         if (buffer == null){
@@ -149,11 +162,12 @@ public class Ventana extends JFrame implements Runnable{
         g.drawString("x:"+x+"|y:"+y, x, y);
         g.drawString("PELOTA|x:"+x+"y:"+y,10,25);
         g.drawRect(120, 120, 50, 50);
-        
+                      
         //Paleta
         g.drawRect(xPaleta,yPaleta,100,10);
         
         g.drawString("FPS: "+promedioFPS, 10, 15);
+        g.drawString("TIME: "+tm.Contador(), 10, 35);
 
         //Dibujo area fin
         g.dispose();
@@ -175,12 +189,30 @@ public class Ventana extends JFrame implements Runnable{
         int frames = 0;
         long tiempo = 0;
         
+        //Colisiones
+        Colisiones col = new Colisiones();
+        int [] xObjP; 
+        int [] yObjP;
+        int [] xObj; 
+        int [] yObj;
+        
+        boolean ciclo = true;
+        while (ciclo){
+            System.out.println(ejecutar);
+            int dato = teclado.movimiento();
+            if (dato == 3){
+                ejecutar = true;
+            }
+        
         while (ejecutar) {
+                        
+            xObjP = col.determinarPuntosX(x, 100);
+            yObjP = col.determinarPuntosY(y, 100);
+            xObj = col.determinarPuntosX(120, 50);
+            yObj = col.determinarPuntosY(120, 50);
             
-            
-            Colisiones col = new Colisiones(x, y, 400, 100, 200, 100);
-            ejecutar = col.colision();
-            
+            ejecutar = col.detecta(xObjP, yObjP, xObj, yObj);
+                      
             
             ahora = System.nanoTime();
             tiempoTranscurrido += (ahora - antes)/tiempoObjetivo;
@@ -199,6 +231,8 @@ public class Ventana extends JFrame implements Runnable{
                 tiempo = 0;
             }
         }
+        }
+        
         detener();
     }
     

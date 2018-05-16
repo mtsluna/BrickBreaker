@@ -13,10 +13,11 @@ import java.awt.event.KeyListener;
  */
 public class Teclado implements KeyListener{
     
-    public static boolean derecha,izquierda;
+    public static boolean derecha,izquierda,pausa;
     public Teclado(){
         derecha = false;
         izquierda = false;
+        pausa = false;
     }
     
     public int movimiento(){
@@ -30,6 +31,11 @@ public class Teclado implements KeyListener{
             izquierda = false;
             return 2;
         }
+        if (pausa){
+            System.out.println("Presiono espacio");
+            pausa = false;
+            return 3;
+        }
         return 0;
     }
 
@@ -41,6 +47,9 @@ public class Teclado implements KeyListener{
         }
         if (tecla == 39){
             derecha = true;
+        }
+        if (tecla == KeyEvent.VK_SPACE){
+            pausa = true;
         }
     }
 
