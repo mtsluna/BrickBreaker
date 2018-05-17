@@ -22,17 +22,17 @@ public class Teclado implements KeyListener{
     
     public int movimiento(){
         if (derecha){
-            System.out.println("Presiono derecha");
+            //System.out.println("Presiono derecha");
             derecha = false;
             return 1;
         }
         if (izquierda){
-            System.out.println("Presiono izquierda");
+            //System.out.println("Presiono izquierda");
             izquierda = false;
             return 2;
         }
         if (pausa){
-            System.out.println("Presiono espacio");
+            //System.out.println("Presiono espacio");
             pausa = false;
             return 3;
         }

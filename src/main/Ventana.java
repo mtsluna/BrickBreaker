@@ -26,17 +26,18 @@ import javax.swing.JFrame;
  */
 public class Ventana extends JFrame implements Runnable{
     
+    //Escala de pantalla
     public static final int WIDTH = 800;
     public static final int HEIGHT = 500;
     //Lienzo
     private Canvas canvas;
+    private BufferStrategy buffer;
+    private Graphics g;
     //Control de datos en subhilo
     private Thread hilo;
     //Control de inicio de juego en FALSO
-    private boolean ejecutar = false;
-    //
-    private BufferStrategy buffer;
-    private Graphics g;
+    private boolean ejecutar = false;    
+    //Objeto teclado
     private Teclado teclado;
     
     //Constructor de clase
@@ -55,6 +56,7 @@ public class Ventana extends JFrame implements Runnable{
         teclado = new Teclado();
         canvas.addKeyListener(teclado);
         
+        //Visibilidad y tamaño de la ventana
         canvas.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         canvas.setFocusable(true);
         
@@ -65,14 +67,17 @@ public class Ventana extends JFrame implements Runnable{
         setVisible(true);       
     }
     
+    //Main
     public static void main(String[] args) {
+        //Creacion de objeto ventana
         Ventana ventana = new Ventana("Space War");
+        //Inicia el ciclo del juego
         ventana.iniciar();
         
     }
     
-    int x = 0;
-    int y = 0;
+    int xPelota = 0;
+    int yPelota = 0;
     int random;
     int contador = 0;
     boolean direccion = true;
@@ -80,22 +85,51 @@ public class Ventana extends JFrame implements Runnable{
     boolean movY = true;
     
     int xPaleta = 400;
-    int yPaleta = 450;
+    int yPaleta = 440;
+    
+    public final int limitesX [] = {15,778};
+    public final int limitesY [] = {15,456};
+    
+    private int tamañoPelota = 10;
+    private int [] puntosPelotaX;
+    private int [] puntosPelotaY;
+    private int [] puntosPaletaX;
+    private int [] puntosPaletaY;
     
     private void actualizar(){
+        //Pelota
+        puntosPelotaX = Colisiones.determinarPuntosX(xPelota, tamañoPelota);
+        puntosPelotaY = Colisiones.determinarPuntosY(yPelota, tamañoPelota);
+        
+        //System.out.println(puntosPelotaX[0]+"|"+puntosPelotaX[1]+"|"+puntosPelotaX[2]+"|"+puntosPelotaX[3]);
+        //System.out.println(puntosPelotaY[0]+"|"+puntosPelotaY[1]+"|"+puntosPelotaY[2]+"|"+puntosPelotaY[3]);
         
         //TECLADO ACTUALIZACIÓN
         //System.out.println(teclado.movimiento());
         int dato = teclado.movimiento();
         
         if (dato == 1){
-        xPaleta = xPaleta + 13;
-        System.out.println(xPaleta);
+            if (xPaleta >= limitesX[1] - 100 || xPaleta >= limitesX[1] - 110){
+                if (xPaleta != limitesX[1] - 100){
+                    xPaleta = xPaleta + ((limitesX[1]-100) - xPaleta);
+                }
+            }
+            else{
+                xPaleta = xPaleta + 12;
+                System.out.println(xPaleta);
+            }            
         }
         else {
             if (dato == 2){
-                xPaleta = xPaleta - 13;
-                System.out.println(xPaleta);
+                if (xPaleta <= limitesX[0]+15){
+                    if (xPaleta != limitesX[0]){
+                        xPaleta = xPaleta - (xPaleta - limitesX[0]);
+                    }
+                }
+                else{
+                    xPaleta = xPaleta - 12;
+                    System.out.println(xPaleta);
+                }
             }
             else{
                 if (dato == 3){
@@ -108,31 +142,44 @@ public class Ventana extends JFrame implements Runnable{
         }
         dato = -1;
         
+        //Colisiones entre la pelota y paleta
+        puntosPaletaX = Colisiones.determinarPuntosX(xPaleta, 100);
+        puntosPaletaY = Colisiones.determinarPuntosY(yPaleta, 10);
         
-        if (x < 693 && movX == true){
-            x++;
-            if (x == 693){
+        System.out.println(puntosPaletaX[0]+"|"+puntosPaletaX[1]+"|"+puntosPaletaX[2]+"|"+puntosPaletaX[3]);
+        System.out.println(puntosPaletaY[0]+"|"+puntosPaletaY[1]+"|"+puntosPaletaY[2]+"|"+puntosPaletaY[3]);
+        
+        System.out.println(Colisiones.detecta(puntosPelotaX, puntosPelotaY, puntosPaletaX, puntosPaletaY));
+        
+        if (xPelota < limitesX[1]-tamañoPelota && movX == true){
+            xPelota++;
+            if (xPelota == limitesX[1]-tamañoPelota){
                 movX = false;
             }
         }
         else{
-            if (x > 0 && movX == false){
-                x--;
-                if (x == 1){
+            if (xPelota > limitesX[0] && movX == false){
+                xPelota--;
+                if (xPelota == limitesX[0]){
                     movX = true;
                 }
             }
         }
-        if (y < 370 && movY == true){
-            y++;
-            if (y == 370){
+        if (yPelota-3 <= yPaleta-tamañoPelota && movY == true){
+            yPelota++;
+            if (yPelota-3 >= (yPaleta-tamañoPelota) && Colisiones.detecta(puntosPelotaX, puntosPelotaY, puntosPaletaX, puntosPaletaY)){
                 movY = false;
+            }
+            else{
+                if (yPelota-3 >= (yPaleta-tamañoPelota) && !Colisiones.detecta(puntosPelotaX, puntosPelotaY, puntosPaletaX, puntosPaletaY)){
+                    movY = true;
+                }
             }
         }
         else{
-            if (y > 0 && movY == false){
-                y--;
-                if (y == 1){
+            if (yPelota > limitesY[0] && movY == false){
+                yPelota--;
+                if (yPelota == limitesY[0]){
                     movY = true;
                 }
             }
@@ -155,13 +202,16 @@ public class Ventana extends JFrame implements Runnable{
          
         g.clearRect(0, 0, WIDTH, HEIGHT);
         
-        g.drawRect(x, y, 100, 100);
-        g.drawRect(x, y, 50, 50);
-        g.drawRect(x+50, y+50, 50, 50);
-        g.drawRect(x+25, y+25, 50, 50);
-        g.drawString("x:"+x+"|y:"+y, x, y);
-        g.drawString("PELOTA|x:"+x+"y:"+y,10,25);
+        g.drawOval(xPelota, yPelota, tamañoPelota, tamañoPelota);
+        g.drawString("x:"+xPelota+"|y:"+yPelota, xPelota, yPelota);
+        g.drawString("PELOTA|x:"+xPelota+"y:"+yPelota,10,25);
         g.drawRect(120, 120, 50, 50);
+        
+        //Ring de JUEGO
+        g.drawLine(limitesX[0], limitesY[0], limitesX[0], limitesY[1]);
+        g.drawLine(limitesX[0], limitesY[0], limitesX[1], limitesY[0]);
+        g.drawLine(limitesX[1], limitesY[0], limitesX[1], limitesY[1]);
+        g.drawLine(limitesX[0], limitesY[1], limitesX[1], limitesY[1]);
                       
         //Paleta
         g.drawRect(xPaleta,yPaleta,100,10);
@@ -189,30 +239,15 @@ public class Ventana extends JFrame implements Runnable{
         int frames = 0;
         long tiempo = 0;
         
-        //Colisiones
-        Colisiones col = new Colisiones();
-        int [] xObjP; 
-        int [] yObjP;
-        int [] xObj; 
-        int [] yObj;
-        
-        boolean ciclo = true;
+        //Ciclo infinito que no puede ser detenido
+        boolean ciclo = true;                                                   
         while (ciclo){
-            System.out.println(ejecutar);
             int dato = teclado.movimiento();
             if (dato == 3){
                 ejecutar = true;
             }
-        
-        while (ejecutar) {
-                        
-            xObjP = col.determinarPuntosX(x, 100);
-            yObjP = col.determinarPuntosY(y, 100);
-            xObj = col.determinarPuntosX(120, 50);
-            yObj = col.determinarPuntosY(120, 50);
-            
-            ejecutar = col.detecta(xObjP, yObjP, xObj, yObj);
-                      
+        //Ciclo de ejecución del juego
+        while (ejecutar) {                      
             
             ahora = System.nanoTime();
             tiempoTranscurrido += (ahora - antes)/tiempoObjetivo;

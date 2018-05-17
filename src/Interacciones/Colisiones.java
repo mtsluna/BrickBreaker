@@ -11,28 +11,32 @@ package Interacciones;
  */
 public class Colisiones {
     
-    public boolean detecta(int [] xObjP,int [] yObjP,int [] xObj,int [] yObj){
+    public static boolean detecta(int [] xObjP,int [] yObjP,int [] xObj,int [] yObj){
         //Colision lado superior izquierdo
         if ((xObjP[0] > xObj[0] && xObjP[0] <= xObj[1]) && (yObjP[0] >= yObj[0] && yObjP[0] <= yObj[2])){
+            System.out.println("Colision");
             return true;
         }
         //colision lado superior derecho
         if ((xObjP[1] >= xObj[0] && xObjP[1] <= xObj[1]) && (yObjP[1] >= yObj[0] && yObjP[1] <= yObj[2])){
+            System.out.println("Colision");
             return true;
         }
         //Colision lado inferior izquierdo
         if ((xObjP[2] >= xObj[0] && xObjP[2] <= xObj[1]) && (yObjP[2] >= yObj[0] && yObjP[2] <= yObj[2])){
+            System.out.println("Colision");
             return true;
         }
         //Colision lado inferior derecho
         if ((xObjP[3] >= xObj[0] && xObjP[3] <= xObj[1]) && (yObjP[3] >= yObj[0] && yObjP[3] <= yObj[2])){
+            System.out.println("Colision");
             return true;
         }
-        return true;
+        return false;
         
     }
     
-    public int [] determinarPuntosX(int xObjParametro, int anchoPelota){
+    public static int [] determinarPuntosX(int xObjParametro, int anchoPelota){
         int [] xObj = new int [4];
         //Lado superior izquierdo por parametro
         xObj[0] = xObjParametro;
@@ -44,7 +48,7 @@ public class Colisiones {
         xObj[3] = xObjParametro + anchoPelota;
         return xObj;
     }
-    public int [] determinarPuntosY(int yObjParametro, int altoPelota){
+    public static int [] determinarPuntosY(int yObjParametro, int altoPelota){
         int [] yObj = new int [4];
         //Lado superior izquierdo por parametro
         yObj[0] = yObjParametro;
