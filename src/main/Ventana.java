@@ -6,16 +6,11 @@
 package main;
 import Interacciones.Colisiones;
 import Interacciones.Teclado;
-import ScoreAndTimer.SaveScore;
 import ScoreAndTimer.Timer;
 import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
-import static java.lang.Math.pow;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -32,6 +27,7 @@ public class Ventana extends JFrame implements Runnable{
     //Lienzo
     private Canvas canvas;
     private BufferStrategy buffer;
+    private BufferStrategy buffer1;
     private Graphics g;
     //Control de datos en subhilo
     private Thread hilo;
@@ -76,16 +72,19 @@ public class Ventana extends JFrame implements Runnable{
         
     }
     
-    int xPelota = 0;
-    int yPelota = 0;
+    int xPelota = 387;
+    int yPelota = 410;
     int random;
     int contador = 0;
     boolean direccion = true;
     boolean movX = true;
     boolean movY = true;
     
-    int xPaleta = 400;
-    int yPaleta = 440;
+    int xPaleta = 346;
+    int yPaleta = 430;
+    
+    int [] xBloques0 = {20,90,165,235,325,398,488,558,633,703};
+    int [] yBloques0 = {30,55,80};
     
     public final int limitesX [] = {15,778};
     public final int limitesY [] = {15,456};
@@ -95,6 +94,11 @@ public class Ventana extends JFrame implements Runnable{
     private int [] puntosPelotaY;
     private int [] puntosPaletaX;
     private int [] puntosPaletaY;
+    private int [] bloquesColision;
+    private boolean [] posiciones = {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
+    
+    int [] tt = {0,0,0};
+    Timer tm = new Timer(tt);
     
     private void actualizar(){
         //Pelota
@@ -116,7 +120,7 @@ public class Ventana extends JFrame implements Runnable{
             }
             else{
                 xPaleta = xPaleta + 12;
-                System.out.println(xPaleta);
+                //System.out.println(xPaleta);
             }            
         }
         else {
@@ -128,7 +132,7 @@ public class Ventana extends JFrame implements Runnable{
                 }
                 else{
                     xPaleta = xPaleta - 12;
-                    System.out.println(xPaleta);
+                    //System.out.println(xPaleta);
                 }
             }
             else{
@@ -145,20 +149,18 @@ public class Ventana extends JFrame implements Runnable{
         //Colisiones entre la pelota y paleta
         puntosPaletaX = Colisiones.determinarPuntosX(xPaleta, 100);
         puntosPaletaY = Colisiones.determinarPuntosY(yPaleta, 10);
-        
-        System.out.println(puntosPaletaX[0]+"|"+puntosPaletaX[1]+"|"+puntosPaletaX[2]+"|"+puntosPaletaX[3]);
-        System.out.println(puntosPaletaY[0]+"|"+puntosPaletaY[1]+"|"+puntosPaletaY[2]+"|"+puntosPaletaY[3]);
-        
-        System.out.println(Colisiones.detecta(puntosPelotaX, puntosPelotaY, puntosPaletaX, puntosPaletaY));
-        
-        if (xPelota < limitesX[1]-tamañoPelota && movX == true){
+//        System.out.println(puntosPaletaX[0]+"|"+puntosPaletaX[1]+"|"+puntosPaletaX[2]+"|"+puntosPaletaX[3]);
+//        System.out.println(puntosPaletaY[0]+"|"+puntosPaletaY[1]+"|"+puntosPaletaY[2]+"|"+puntosPaletaY[3]);        
+//        System.out.println(Colisiones.detecta(puntosPelotaX, puntosPelotaY, puntosPaletaX, puntosPaletaY));
+
+        if (xPelota <= limitesX[1]-tamañoPelota && movX == true){
             xPelota++;
             if (xPelota == limitesX[1]-tamañoPelota){
                 movX = false;
             }
         }
         else{
-            if (xPelota > limitesX[0] && movX == false){
+            if (xPelota >= limitesX[0] && movX == false){
                 xPelota--;
                 if (xPelota == limitesX[0]){
                     movX = true;
@@ -177,18 +179,27 @@ public class Ventana extends JFrame implements Runnable{
             }
         }
         else{
-            if (yPelota > limitesY[0] && movY == false){
+            if (yPelota >= limitesY[0] && movY == false){
                 yPelota--;
                 if (yPelota == limitesY[0]){
                     movY = true;
                 }
             }
         }
+        
+        //Bloques 
+        bloquesColision = Colisiones.bloques(puntosPelotaX, puntosPelotaY, xBloques0, yBloques0);
+        if (bloquesColision[0] < 0){
+            
+        }
+        else{
+            posiciones[bloquesColision[0]] = false;
+            System.out.println(posiciones[bloquesColision[0]]);
+        }
     }
     
     //Uso del timer
-    int [] tt = {0,0,0};
-    Timer tm = new Timer(tt);
+    
     
     private void dibujar(){
         buffer = canvas.getBufferStrategy();
@@ -211,8 +222,14 @@ public class Ventana extends JFrame implements Runnable{
         g.drawLine(limitesX[0], limitesY[0], limitesX[0], limitesY[1]);
         g.drawLine(limitesX[0], limitesY[0], limitesX[1], limitesY[0]);
         g.drawLine(limitesX[1], limitesY[0], limitesX[1], limitesY[1]);
-        g.drawLine(limitesX[0], limitesY[1], limitesX[1], limitesY[1]);
-                      
+        g.drawLine(limitesX[0], limitesY[1], limitesX[1], limitesY[1]);        
+        
+        for (int i = 0; i < 10; i++){
+            g.drawRect(xBloques0[i], yBloques0[0], 70, 20);
+            g.drawRect(xBloques0[i], yBloques0[1], 70, 20);
+            g.drawRect(xBloques0[i], yBloques0[2], 70, 20);
+        }
+        
         //Paleta
         g.drawRect(xPaleta,yPaleta,100,10);
         
@@ -237,35 +254,41 @@ public class Ventana extends JFrame implements Runnable{
         long ahora;
         long antes = System.nanoTime();
         int frames = 0;
-        long tiempo = 0;
+        long tiempo = 0;        
+        boolean primera = true;
         
         //Ciclo infinito que no puede ser detenido
-        boolean ciclo = true;                                                   
+        boolean ciclo = true;
         while (ciclo){
             int dato = teclado.movimiento();
             if (dato == 3){
                 ejecutar = true;
+                antes = System.nanoTime();
             }
-        //Ciclo de ejecución del juego
-        while (ejecutar) {                      
-            
-            ahora = System.nanoTime();
-            tiempoTranscurrido += (ahora - antes)/tiempoObjetivo;
-            tiempo += (ahora - antes);
-            antes = ahora;
-            
-            if (tiempoTranscurrido >= 1){
-                actualizar();
-                dibujar();
-                tiempoTranscurrido--;
-                frames++;
+            //Ciclo de ejecución del juego
+            while (ejecutar) {
+                ahora = System.nanoTime();
+                tiempoTranscurrido += (ahora - antes)/tiempoObjetivo;
+                tiempo += (ahora - antes);
+                antes = ahora;
+                
+                if (tiempoTranscurrido >= 1){
+                    actualizar();
+                    dibujar();
+                    tiempoTranscurrido--;
+                    frames++;
+                }
+                if (tiempo >= 1000000000){
+                    promedioFPS = frames;
+                    frames = 0;
+                    tiempo = 0;
+                }
+                if ((tt[0] == 0 && tt[1] == 0 && tt[2] == 3) && primera == true){
+                    System.out.println("Hola");
+                    ejecutar = false;
+                    primera = false;
+                }
             }
-            if (tiempo >= 1000000000){
-                promedioFPS = frames;
-                frames = 0;
-                tiempo = 0;
-            }
-        }
         }
         
         detener();

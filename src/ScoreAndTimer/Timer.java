@@ -30,7 +30,6 @@ public class Timer {
         }
         relojContador[2]++;
         return (relojContador[0]+":"+relojContador[1]+":"+relojContador[2]);
-    }
-    
+    }   
     
 }
