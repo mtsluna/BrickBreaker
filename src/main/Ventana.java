@@ -99,17 +99,27 @@ public class Ventana extends JFrame implements Runnable{
     private int [] posicionesNum = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     private boolean piso = true;
     private int lado;
+    private int vidas = 4;
     
     int [] tt = {0,0,0};
     Timer tm = new Timer(tt);
     
     private void actualizarPaletaPausa(int dato){
         if (piso){
-            
+            if (vidas == 4){
+                xPelota = xPaleta + 45;
+                yPelota = 410;
+                if (dato == 3){
+                    vidas--;
+                }
+            }            
         }
         else {
             xPelota = xPaleta + 45;
             yPelota = 410;
+            if (dato == 3){          //////////ARREGLAR
+                vidas--;
+            }
         }
         if (dato == 1){
             if (xPaleta >= limitesX[1] - 100 || xPaleta >= limitesX[1] - 110){
@@ -366,6 +376,7 @@ public class Ventana extends JFrame implements Runnable{
             int dato = teclado.movimiento();
             actualizarPaletaPausa(dato);
             dibujar();
+            System.out.println(vidas);
             if (dato == 3){
                 ejecutar = true;
                 antes = System.nanoTime();
