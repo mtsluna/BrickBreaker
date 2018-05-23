@@ -35,7 +35,7 @@ public class Colisiones {
         return false;        
     }
     public static int lado(int [] xObjP,int [] yObjP,int [] xObj,int [] yObj){
-        if ((xObjP[0] > xObj[0] && xObjP[0] <= xObj[1]) && (yObjP[0] >= yObj[0] && yObjP[0] <= yObj[2])){
+        if ((xObjP[0] >= xObj[0] && xObjP[0] <= xObj[1]) && (yObjP[0] >= yObj[0] && yObjP[0] <= yObj[2])){
             System.out.println("Colision");
             return 1;
         }

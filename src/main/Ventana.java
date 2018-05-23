@@ -96,11 +96,59 @@ public class Ventana extends JFrame implements Runnable{
     private int [] puntosPaletaY;
     private int [] bloquesColision;
     private boolean [] posiciones = {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
+    private int [] posicionesNum = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    private boolean piso = true;
+    private int lado;
     
     int [] tt = {0,0,0};
     Timer tm = new Timer(tt);
     
+    private void actualizarPaletaPausa(int dato){
+        if (piso){
+            
+        }
+        else {
+            xPelota = xPaleta + 45;
+            yPelota = 410;
+        }
+        if (dato == 1){
+            if (xPaleta >= limitesX[1] - 100 || xPaleta >= limitesX[1] - 110){
+                System.out.println("1");
+                if (xPaleta != limitesX[1] - 100){
+                    xPaleta = xPaleta + ((limitesX[1]-100) - xPaleta);
+                }
+            }
+            else{
+                xPaleta = xPaleta + 12;
+                //System.out.println(xPaleta);
+            }            
+        }
+        else {
+            if (dato == 2){
+                if (xPaleta <= limitesX[0]+15){
+                    if (xPaleta != limitesX[0]){
+                        xPaleta = xPaleta - (xPaleta - limitesX[0]);
+                    }
+                }
+                else{
+                    xPaleta = xPaleta - 12;
+                    //System.out.println(xPaleta);
+                }
+            }
+            else{
+                if (dato == 3){
+                    ejecutar = false;
+                }
+                else{
+                    
+                }
+            }
+        }
+        dato = -1;
+    }
+    
     private void actualizar(){
+        
         //Pelota
         puntosPelotaX = Colisiones.determinarPuntosX(xPelota, tamañoPelota);
         puntosPelotaY = Colisiones.determinarPuntosY(yPelota, tamañoPelota);
@@ -152,7 +200,21 @@ public class Ventana extends JFrame implements Runnable{
 //        System.out.println(puntosPaletaX[0]+"|"+puntosPaletaX[1]+"|"+puntosPaletaX[2]+"|"+puntosPaletaX[3]);
 //        System.out.println(puntosPaletaY[0]+"|"+puntosPaletaY[1]+"|"+puntosPaletaY[2]+"|"+puntosPaletaY[3]);        
 //        System.out.println(Colisiones.detecta(puntosPelotaX, puntosPelotaY, puntosPaletaX, puntosPaletaY));
-
+        //Bloques 
+        bloquesColision = Colisiones.bloques(puntosPelotaX, puntosPelotaY, xBloques0, yBloques0);
+        if (bloquesColision[0] < 0){
+            
+        }
+        else{
+            posiciones[bloquesColision[0]] = false;
+            //System.out.println(posiciones[bloquesColision[0]]);
+            for (int i = 0; i < 30; i++){
+                //System.out.print(posiciones[i]+"|");
+            }
+        }        
+        lado = bloquesColision[1];
+        //System.out.println("Y: "+yPelota);
+        
         if (xPelota <= limitesX[1]-tamañoPelota && movX == true){
             xPelota++;
             if (xPelota == limitesX[1]-tamañoPelota){
@@ -167,7 +229,7 @@ public class Ventana extends JFrame implements Runnable{
                 }
             }
         }
-        if (yPelota-3 <= yPaleta-tamañoPelota && movY == true){
+        if ((yPelota-3 <= yPaleta-tamañoPelota && movY == true)){
             yPelota++;
             if (yPelota-3 >= (yPaleta-tamañoPelota) && Colisiones.detecta(puntosPelotaX, puntosPelotaY, puntosPaletaX, puntosPaletaY)){
                 movY = false;
@@ -175,6 +237,8 @@ public class Ventana extends JFrame implements Runnable{
             else{
                 if (yPelota-3 >= (yPaleta-tamañoPelota) && !Colisiones.detecta(puntosPelotaX, puntosPelotaY, puntosPaletaX, puntosPaletaY)){
                     movY = true;
+                    piso = false;
+                    ejecutar = false;
                 }
             }
         }
@@ -183,10 +247,17 @@ public class Ventana extends JFrame implements Runnable{
                 yPelota--;
                 if (yPelota == limitesY[0]){
                     movY = true;
+                }                
+                if (bloquesColision[0] > 0 && posicionesNum[bloquesColision[0]] == 0){
+                    System.out.println(bloquesColision[0]);
+                    if ((lado == 1 || lado == 2)){
+                        movY = true;
+                    }
+                    posicionesNum[bloquesColision[0]] = bloquesColision[0];
                 }
             }
         }
-        
+        //System.out.println(movY);
         //Bloques 
         bloquesColision = Colisiones.bloques(puntosPelotaX, puntosPelotaY, xBloques0, yBloques0);
         if (bloquesColision[0] < 0){
@@ -194,8 +265,15 @@ public class Ventana extends JFrame implements Runnable{
         }
         else{
             posiciones[bloquesColision[0]] = false;
-            System.out.println(posiciones[bloquesColision[0]]);
+            //System.out.println(posiciones[bloquesColision[0]]);
+            for (int i = 0; i < 30; i++){
+                //System.out.print(posiciones[i]+"|");
+            }
         }
+        
+        lado = bloquesColision[1];
+        //System.out.println("Y: "+yPelota);      
+        
     }
     
     //Uso del timer
@@ -224,18 +302,43 @@ public class Ventana extends JFrame implements Runnable{
         g.drawLine(limitesX[1], limitesY[0], limitesX[1], limitesY[1]);
         g.drawLine(limitesX[0], limitesY[1], limitesX[1], limitesY[1]);        
         
+        int contadorInterno = 0;
         for (int i = 0; i < 10; i++){
-            g.drawRect(xBloques0[i], yBloques0[0], 70, 20);
-            g.drawRect(xBloques0[i], yBloques0[1], 70, 20);
-            g.drawRect(xBloques0[i], yBloques0[2], 70, 20);
+            //if (i == 1){contadorInterno = 0;} else{contadorInterno++;}
+            if (posiciones[contadorInterno] == false){
+                
+            }
+            else{
+                g.drawRect(xBloques0[i], yBloques0[0], 70, 20);
+            }
+            contadorInterno++;
+            if (posiciones[contadorInterno] == false){
+                
+            }
+            else {
+                g.drawRect(xBloques0[i], yBloques0[1], 70, 20);
+            }
+            contadorInterno++;
+            if (posiciones[contadorInterno] == false){
+                
+            }
+            else{
+                g.drawRect(xBloques0[i], yBloques0[2], 70, 20);
+            }
+            contadorInterno++;
         }
+        //System.out.println("C: "+contadorInterno);
         
         //Paleta
         g.drawRect(xPaleta,yPaleta,100,10);
         
         g.drawString("FPS: "+promedioFPS, 10, 15);
-        g.drawString("TIME: "+tm.Contador(), 10, 35);
-
+        if (ejecutar){
+            g.drawString("TIEMPO: "+tm.Contador(), 10, 35);
+        }
+        else{
+            g.drawString("TIEMPO: PAUSADO", 10, 35);
+        }
         //Dibujo area fin
         g.dispose();
         buffer.show();
@@ -261,6 +364,8 @@ public class Ventana extends JFrame implements Runnable{
         boolean ciclo = true;
         while (ciclo){
             int dato = teclado.movimiento();
+            actualizarPaletaPausa(dato);
+            dibujar();
             if (dato == 3){
                 ejecutar = true;
                 antes = System.nanoTime();
@@ -283,11 +388,11 @@ public class Ventana extends JFrame implements Runnable{
                     frames = 0;
                     tiempo = 0;
                 }
-                if ((tt[0] == 0 && tt[1] == 0 && tt[2] == 3) && primera == true){
-                    System.out.println("Hola");
-                    ejecutar = false;
-                    primera = false;
-                }
+//                if ((tt[0] == 0 && tt[1] == 0 && tt[2] == 3) && primera == true){
+//                    System.out.println("Hola");
+//                    ejecutar = false;
+//                    primera = false;
+//                }
             }
         }
         
@@ -298,7 +403,7 @@ public class Ventana extends JFrame implements Runnable{
     private void iniciar(){
         hilo = new Thread(this);
         hilo.start();
-        ejecutar = true;
+        ejecutar = false;
     }
     
     //Detener hilo
