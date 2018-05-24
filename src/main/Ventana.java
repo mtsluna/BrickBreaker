@@ -73,7 +73,7 @@ public class Ventana extends JFrame implements Runnable{
     }
     
     int xPelota = 387;
-    int yPelota = 410;
+    int yPelota = 410; //410
     int random;
     int contador = 0;
     boolean direccion = true;
@@ -98,30 +98,63 @@ public class Ventana extends JFrame implements Runnable{
     private boolean [] posiciones = {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
     private int [] posicionesNum = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     private boolean piso = true;
+    private boolean paletaMov = true;
     private int lado;
     private int vidas = 4;
+    private boolean [] vecesVidas = {true,true,true,true};
     
     int [] tt = {0,0,0};
     Timer tm = new Timer(tt);
     
     private void actualizarPaletaPausa(int dato){
+        System.out.println(vidas);
         if (piso){
-            if (vidas == 4){
-                xPelota = xPaleta + 45;
-                yPelota = 410;
-                if (dato == 3){
-                    vidas--;
-                }
-            }            
         }
         else {
-            xPelota = xPaleta + 45;
-            yPelota = 410;
-            if (dato == 3){          //////////ARREGLAR
-                vidas--;
+            if (vecesVidas[3] && vidas == 4) {
+                System.out.println("SINO");
+                xPelota = 45 + xPaleta;
+                yPelota = 410;
+                if (dato == 3){
+                    vecesVidas[3] = false;
+                }
+            }
+            else {
+                if (vecesVidas[2] && vidas == 3){
+                    System.out.println("SINO");
+                    xPelota = 45 + xPaleta;
+                    yPelota = 410;
+                    if (dato == 3){
+                        vecesVidas[2] =  false;
+                    }
+                }
+                else {
+                    if (vecesVidas[1] && vidas == 2){
+                        System.out.println("SINO");
+                        xPelota = 45 + xPaleta;
+                        yPelota = 410;
+                        if (dato == 3){
+                            vecesVidas[1] = false;
+                        }
+                    }
+                    else {
+                        if (vecesVidas[0] && vidas == 1){
+                            System.out.println("SINO");
+                            xPelota = 45 + xPaleta;
+                            yPelota = 410;
+                            if (dato == 3){
+                                vecesVidas[0] = false;
+                            }
+                        }
+                    }
+                    if (vidas == 0){
+                        xPelota = 45 + xPaleta;
+                        yPelota = 410;
+                    }
+                }
             }
         }
-        if (dato == 1){
+        if (dato == 1 && paletaMov){
             if (xPaleta >= limitesX[1] - 100 || xPaleta >= limitesX[1] - 110){
                 System.out.println("1");
                 if (xPaleta != limitesX[1] - 100){
@@ -134,7 +167,7 @@ public class Ventana extends JFrame implements Runnable{
             }            
         }
         else {
-            if (dato == 2){
+            if (dato == 2 && paletaMov){
                 if (xPaleta <= limitesX[0]+15){
                     if (xPaleta != limitesX[0]){
                         xPaleta = xPaleta - (xPaleta - limitesX[0]);
@@ -196,6 +229,7 @@ public class Ventana extends JFrame implements Runnable{
             else{
                 if (dato == 3){
                     ejecutar = false;
+                    paletaMov = false;
                 }
                 else{
                     
@@ -219,7 +253,7 @@ public class Ventana extends JFrame implements Runnable{
             posiciones[bloquesColision[0]] = false;
             //System.out.println(posiciones[bloquesColision[0]]);
             for (int i = 0; i < 30; i++){
-                //System.out.print(posiciones[i]+"|");
+                System.out.print(posiciones[i]+"|");
             }
         }        
         lado = bloquesColision[1];
@@ -249,8 +283,17 @@ public class Ventana extends JFrame implements Runnable{
                     movY = true;
                     piso = false;
                     ejecutar = false;
+                    paletaMov = true;
+                    vidas--;
                 }
             }
+            if (bloquesColision[0] > 0 && posicionesNum[bloquesColision[0]] == 0){
+                    System.out.println(bloquesColision[0]);
+                    if ((lado == 3 || lado == 4)){
+                        movY = false;
+                    }
+                    posicionesNum[bloquesColision[0]] = bloquesColision[0];
+                }
         }
         else{
             if (yPelota >= limitesY[0] && movY == false){
@@ -265,19 +308,6 @@ public class Ventana extends JFrame implements Runnable{
                     }
                     posicionesNum[bloquesColision[0]] = bloquesColision[0];
                 }
-            }
-        }
-        //System.out.println(movY);
-        //Bloques 
-        bloquesColision = Colisiones.bloques(puntosPelotaX, puntosPelotaY, xBloques0, yBloques0);
-        if (bloquesColision[0] < 0){
-            
-        }
-        else{
-            posiciones[bloquesColision[0]] = false;
-            //System.out.println(posiciones[bloquesColision[0]]);
-            for (int i = 0; i < 30; i++){
-                //System.out.print(posiciones[i]+"|");
             }
         }
         
@@ -314,28 +344,15 @@ public class Ventana extends JFrame implements Runnable{
         
         int contadorInterno = 0;
         for (int i = 0; i < 10; i++){
-            //if (i == 1){contadorInterno = 0;} else{contadorInterno++;}
-            if (posiciones[contadorInterno] == false){
-                
+            for (int j = 0; j < 3; j++){
+                if (posiciones[contadorInterno] == false) {
+                    
+                }
+                else{
+                    g.drawRect(xBloques0[i], yBloques0[j], 70, 20);
+                }
+                contadorInterno++;
             }
-            else{
-                g.drawRect(xBloques0[i], yBloques0[0], 70, 20);
-            }
-            contadorInterno++;
-            if (posiciones[contadorInterno] == false){
-                
-            }
-            else {
-                g.drawRect(xBloques0[i], yBloques0[1], 70, 20);
-            }
-            contadorInterno++;
-            if (posiciones[contadorInterno] == false){
-                
-            }
-            else{
-                g.drawRect(xBloques0[i], yBloques0[2], 70, 20);
-            }
-            contadorInterno++;
         }
         //System.out.println("C: "+contadorInterno);
         
@@ -376,8 +393,8 @@ public class Ventana extends JFrame implements Runnable{
             int dato = teclado.movimiento();
             actualizarPaletaPausa(dato);
             dibujar();
-            System.out.println(vidas);
-            if (dato == 3){
+            //System.out.println(vidas);
+            if (dato == 3 && vidas > 0){
                 ejecutar = true;
                 antes = System.nanoTime();
             }
@@ -399,11 +416,6 @@ public class Ventana extends JFrame implements Runnable{
                     frames = 0;
                     tiempo = 0;
                 }
-//                if ((tt[0] == 0 && tt[1] == 0 && tt[2] == 3) && primera == true){
-//                    System.out.println("Hola");
-//                    ejecutar = false;
-//                    primera = false;
-//                }
             }
         }
         

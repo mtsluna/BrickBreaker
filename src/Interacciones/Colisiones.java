@@ -106,7 +106,6 @@ public class Colisiones {
                     l = lado(PuntosPelotaX, PuntosPelotasY, puntosBloqueX, puntosBloqueY);
                     devolucion[0] = c;
                     devolucion[1] = l;
-//                    System.out.println(devolucion[0]+"|"+devolucion[1]);
                     return devolucion;
                 }
                 else{
