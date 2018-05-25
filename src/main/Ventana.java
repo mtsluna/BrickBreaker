@@ -5,12 +5,17 @@
  */
 package main;
 import Interacciones.Colisiones;
+import Interacciones.Imagenes;
 import Interacciones.Teclado;
 import ScoreAndTimer.Timer;
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -23,7 +28,7 @@ public class Ventana extends JFrame implements Runnable{
     
     //Escala de pantalla
     public static final int WIDTH = 800;
-    public static final int HEIGHT = 500;
+    public static final int HEIGHT = 530;
     //Lienzo
     private Canvas canvas;
     private BufferStrategy buffer;
@@ -102,6 +107,9 @@ public class Ventana extends JFrame implements Runnable{
     private int lado;
     private int vidas = 4;
     private boolean [] vecesVidas = {true,true,true,true};
+    private boolean [] lateral = {false,false};
+    private int seleccionPelota = 0;
+    private int seleccionPaleta = 1;
     
     int [] tt = {0,0,0};
     Timer tm = new Timer(tt);
@@ -109,6 +117,13 @@ public class Ventana extends JFrame implements Runnable{
     private void actualizarPaletaPausa(int dato){
         System.out.println(vidas);
         if (piso){
+            if (vidas == 4){
+                xPelota = 45 + xPaleta;
+                yPelota = 410;
+                if (dato == 3){
+                    vidas--;
+                }
+            }
         }
         else {
             if (vecesVidas[3] && vidas == 4) {
@@ -310,6 +325,19 @@ public class Ventana extends JFrame implements Runnable{
                 }
             }
         }
+        lateral = Colisiones.lateral(puntosPelotaX, puntosPelotaY, xBloques0, yBloques0);
+        if (lateral[1] && bloquesColision[0] > 0 && posicionesNum[bloquesColision[0]] == 0){
+            movX = true;
+            movY = false;
+        }
+        else {
+            if (lateral[0] && bloquesColision[0] > 0 && posicionesNum[bloquesColision[0]] == 0){
+                movX = true;
+            }
+            else {
+                
+            }
+        }
         
         lado = bloquesColision[1];
         //System.out.println("Y: "+yPelota);      
@@ -318,6 +346,8 @@ public class Ventana extends JFrame implements Runnable{
     
     //Uso del timer
     
+    Imagenes imagenes = new Imagenes();
+    List<BufferedImage> dibujos = imagenes.cargarImagenes();
     
     private void dibujar(){
         buffer = canvas.getBufferStrategy();
@@ -328,13 +358,40 @@ public class Ventana extends JFrame implements Runnable{
         
         g = buffer.getDrawGraphics();
         //Dibujo area inicio
-         
+        
         g.clearRect(0, 0, WIDTH, HEIGHT);
         
-        g.drawOval(xPelota, yPelota, tamañoPelota, tamañoPelota);
+        //Relleno area de juego
+        g.setColor(Color.lightGray);
+        g.fillRect(15, 15, 763, 441);
+        //Contorneado
+        g.setColor(Color.black);
+        g.drawRect(15, 15, 763, 441);
+        //Caja de datos relleno
+        g.setColor(Color.lightGray);
+        g.fillRect(15, 465, 763, 25);
+        //Caja de datos contorno
+        g.setColor(Color.black);
+        g.drawRect(15, 465, 763, 25);
+        
+        
+        
+        switch (seleccionPelota){
+            case 0: g.drawImage(dibujos.get(0), xPelota, yPelota, tamañoPelota, tamañoPelota, this);
+            break;
+            case 1: g.drawImage(dibujos.get(1), xPelota, yPelota, tamañoPelota, tamañoPelota, this);
+            break;
+            case 2: g.drawImage(dibujos.get(2), xPelota, yPelota, tamañoPelota, tamañoPelota, this);
+            break;
+            case 3: g.drawImage(dibujos.get(3), xPelota, yPelota, tamañoPelota, tamañoPelota, this);
+            break;
+            case 4: g.drawImage(dibujos.get(4), xPelota, yPelota, tamañoPelota, tamañoPelota, this);
+        }
+        
+        //g.drawOval(xPelota, yPelota, tamañoPelota, tamañoPelota);
         g.drawString("x:"+xPelota+"|y:"+yPelota, xPelota, yPelota);
         g.drawString("PELOTA|x:"+xPelota+"y:"+yPelota,10,25);
-        g.drawRect(120, 120, 50, 50);
+        //g.drawImage(dibujos.get(4), 50, 50, 10, 10, this);
         
         //Ring de JUEGO
         g.drawLine(limitesX[0], limitesY[0], limitesX[0], limitesY[1]);
@@ -349,7 +406,19 @@ public class Ventana extends JFrame implements Runnable{
                     
                 }
                 else{
-                    g.drawRect(xBloques0[i], yBloques0[j], 70, 20);
+                    if (j == 0){
+                        g.drawImage(dibujos.get(5), xBloques0[i], yBloques0[j], 70, 20, this);
+                    }
+                    else {
+                        if (j == 1){
+                            g.drawImage(dibujos.get(6), xBloques0[i], yBloques0[j], 70, 20, this);
+                        }
+                        else {
+                            if (j == 2){
+                                g.drawImage(dibujos.get(7), xBloques0[i], yBloques0[j], 70, 20, this);
+                            }
+                        }
+                    }
                 }
                 contadorInterno++;
             }
@@ -357,7 +426,14 @@ public class Ventana extends JFrame implements Runnable{
         //System.out.println("C: "+contadorInterno);
         
         //Paleta
-        g.drawRect(xPaleta,yPaleta,100,10);
+        if (seleccionPaleta == 0){
+            g.drawImage(dibujos.get(8),xPaleta,yPaleta,100,10,this);
+        }
+        else {
+            if (seleccionPaleta == 1){
+                g.drawImage(dibujos.get(9),xPaleta,yPaleta,100,10,this);
+            }
+        }
         
         g.drawString("FPS: "+promedioFPS, 10, 15);
         if (ejecutar){
@@ -366,6 +442,7 @@ public class Ventana extends JFrame implements Runnable{
         else{
             g.drawString("TIEMPO: PAUSADO", 10, 35);
         }
+        
         //Dibujo area fin
         g.dispose();
         buffer.show();

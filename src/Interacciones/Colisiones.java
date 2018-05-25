@@ -92,7 +92,7 @@ public class Colisiones {
     //      x=0 y=10    x=10 y=10
     //      L.I.I       L.I.D
     
-    public static int [] bloques(int [] PuntosPelotaX,int [] PuntosPelotasY, int [] xBloques,int [] yBloques){
+    public static int [] bloques(int [] puntosPelotaX,int [] puntosPelotasY, int [] xBloques,int [] yBloques){
         int [] puntosBloqueX;
         int c = 0;
         int l = 5;
@@ -102,8 +102,8 @@ public class Colisiones {
             for (int j = 0; j < 3; j++){
                 puntosBloqueX = determinarPuntosX(xBloques[i], 70);               
                 puntosBloqueY = determinarPuntosY(yBloques[j], 20);
-                if (detecta(PuntosPelotaX, PuntosPelotasY, puntosBloqueX, puntosBloqueY)){
-                    l = lado(PuntosPelotaX, PuntosPelotasY, puntosBloqueX, puntosBloqueY);
+                if (detecta(puntosPelotaX, puntosPelotasY, puntosBloqueX, puntosBloqueY)){
+                    l = lado(puntosPelotaX, puntosPelotasY, puntosBloqueX, puntosBloqueY);
                     devolucion[0] = c;
                     devolucion[1] = l;
                     return devolucion;
@@ -117,5 +117,35 @@ public class Colisiones {
         }
 //        System.out.println(devolucion[0]+"|"+devolucion[1]);
         return devolucion;
+    }
+    
+    public static boolean [] lateral(int [] puntosPelotaX,int [] puntosPelotasY, int [] xBloques,int [] yBloques){
+        boolean [] lateral = {false,false};
+        int [] puntosBloqueY;
+        int [] puntosBloqueX;
+        
+        for(int i = 0; i < 10; i++){
+            for (int j = 0; j < 3; j++){
+                puntosBloqueX = determinarPuntosX(xBloques[i], 70);               
+                puntosBloqueY = determinarPuntosY(yBloques[j], 20);
+                
+                if (puntosBloqueX[1] >= puntosPelotaX[0] && puntosBloqueY[0] <= puntosPelotasY[0] && puntosBloqueY[3] >= puntosPelotasY[0]){
+                        lateral[0] = false;
+                        lateral[1] = true;
+                        return lateral;
+                }
+                else {
+                    if (puntosBloqueX[0] <= puntosPelotaX[1] && puntosBloqueY[0] <= puntosPelotasY[0] && puntosBloqueY[3] >= puntosPelotasY[0]){
+                        lateral[0] = true;
+                        lateral[1] = false;
+                        return lateral;
+                    }
+                }
+                
+            }   
+        }
+        lateral[0] = false;
+        lateral[1] = false;
+        return lateral;                
     }
 }
