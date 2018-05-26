@@ -30,46 +30,46 @@ public class Imagenes {
             
             //PELOTAS
             //0
-            img = ImageIO.read(new File("imagenes/pelota_0.png"));
+            img = ImageIO.read(new File("pelota_0.png"));
             imagenes.add(img);
             //1
-            img = ImageIO.read(new File("imagenes/pelota_1.png"));
+            img = ImageIO.read(new File("pelota_1.png"));
             imagenes.add(img);
             //2
-            img = ImageIO.read(new File("imagenes/pelota_2.png"));
+            img = ImageIO.read(new File("pelota_2.png"));
             imagenes.add(img);
             //3
-            img = ImageIO.read(new File("imagenes/pelota_3.png"));
+            img = ImageIO.read(new File("pelota_3.png"));
             imagenes.add(img);
             //4
-            img = ImageIO.read(new File("imagenes/pelota_4.png"));
+            img = ImageIO.read(new File("pelota_4.png"));
             imagenes.add(img);
             
             //LADRILLOS
             //5
-            img = ImageIO.read(new File("imagenes/ladrillo_0.png"));
+            img = ImageIO.read(new File("ladrillo_0.png"));
             imagenes.add(img);
             //6
-            img = ImageIO.read(new File("imagenes/ladrillo_1.png"));
+            img = ImageIO.read(new File("ladrillo_1.png"));
             imagenes.add(img);
             //7
-            img = ImageIO.read(new File("imagenes/ladrillo_2.png"));
+            img = ImageIO.read(new File("ladrillo_2.png"));
             imagenes.add(img);
             
             //PALETAS
             //8
-            img = ImageIO.read(new File("imagenes/paleta_0.png"));
+            img = ImageIO.read(new File("paleta_0.png"));
             imagenes.add(img);
             //9
-            img = ImageIO.read(new File("imagenes/paleta_1.png"));
+            img = ImageIO.read(new File("paleta_1.png"));
             imagenes.add(img);
             
             //FONDO
             //10
-            img = ImageIO.read(new File("imagenes/fondo_0.png"));
+            img = ImageIO.read(new File("fondo_0.png"));
             imagenes.add(img);
             //11
-            img = ImageIO.read(new File("imagenes/fondo_1.png"));
+            img = ImageIO.read(new File("fondo_1.png"));
             imagenes.add(img);
             
         } 

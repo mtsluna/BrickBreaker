@@ -24,7 +24,7 @@ import javax.swing.JFrame;
  *
  * @author MtsSk
  */
-public class Ventana extends JFrame implements Runnable{
+public class Ventana extends JFrame /*implements Runnable*/{
     
     //Escala de pantalla
     public static final int WIDTH = 800;
@@ -69,11 +69,13 @@ public class Ventana extends JFrame implements Runnable{
     }
     
     //Main
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException{
         //Creacion de objeto ventana
         Ventana ventana = new Ventana("Space War");
         //Inicia el ciclo del juego
-        ventana.iniciar();
+//        ventana.iniciar();
+        ventana.ciclo();
+        
         
     }
     
@@ -114,7 +116,7 @@ public class Ventana extends JFrame implements Runnable{
     int [] tt = {0,0,0};
     Timer tm = new Timer(tt);
     
-    private void actualizarPaletaPausa(int dato){
+    public void actualizarPaletaPausa(int dato){
         System.out.println(vidas);
         if (piso){
             if (vidas == 4){
@@ -205,7 +207,7 @@ public class Ventana extends JFrame implements Runnable{
         dato = -1;
     }
     
-    private void actualizar(){
+    public void actualizar(){
         
         //Pelota
         puntosPelotaX = Colisiones.determinarPuntosX(xPelota, tamañoPelota);
@@ -349,7 +351,7 @@ public class Ventana extends JFrame implements Runnable{
     Imagenes imagenes = new Imagenes();
     List<BufferedImage> dibujos = imagenes.cargarImagenes();
     
-    private void dibujar(){
+    public void dibujar(){
         buffer = canvas.getBufferStrategy();
         if (buffer == null){
             canvas.createBufferStrategy(3);
@@ -455,8 +457,7 @@ public class Ventana extends JFrame implements Runnable{
     private int promedioFPS = FPS;
     
     //Ejecución
-    @Override
-    public void run() {
+    public void ciclo() throws InterruptedException {
         
         long ahora;
         long antes = System.nanoTime();
@@ -467,6 +468,7 @@ public class Ventana extends JFrame implements Runnable{
         //Ciclo infinito que no puede ser detenido
         boolean ciclo = true;
         while (ciclo){
+            System.out.println("Hola");
             int dato = teclado.movimiento();
             actualizarPaletaPausa(dato);
             dibujar();
@@ -477,43 +479,48 @@ public class Ventana extends JFrame implements Runnable{
             }
             //Ciclo de ejecución del juego
             while (ejecutar) {
-                ahora = System.nanoTime();
-                tiempoTranscurrido += (ahora - antes)/tiempoObjetivo;
-                tiempo += (ahora - antes);
-                antes = ahora;
+//                System.out.println("Hola");
+//                ahora = System.nanoTime();
+//                tiempoTranscurrido += (ahora - antes)/tiempoObjetivo;
+//                tiempo += (ahora - antes);
+//                antes = ahora;
                 
-                if (tiempoTranscurrido >= 1){
-                    actualizar();
-                    dibujar();
-                    tiempoTranscurrido--;
-                    frames++;
-                }
-                if (tiempo >= 1000000000){
-                    promedioFPS = frames;
-                    frames = 0;
-                    tiempo = 0;
-                }
+                actualizar();
+                dibujar();
+                Thread.sleep(15);
+
+//                if (tiempoTranscurrido >= 1){
+//                    actualizar();
+//                    dibujar();
+//                    tiempoTranscurrido--;
+//                    frames++;
+//                }
+//                if (tiempo >= 1000000000){
+//                    promedioFPS = frames;
+//                    frames = 0;
+//                    tiempo = 0;
+//                }
             }
         }
         
-        detener();
+//        detener();
     }
     
-    //Iniciar hilo
-    private void iniciar(){
-        hilo = new Thread(this);
-        hilo.start();
-        ejecutar = false;
-    }
-    
-    //Detener hilo
-    private void detener(){
-        try {
-            hilo.join();
-            ejecutar = false;
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+//    //Iniciar hilo
+//    private void iniciar(){
+//        hilo = new Thread(this);
+//        hilo.start();
+//        ejecutar = false;
+//    }
+//    
+//    //Detener hilo
+//    private void detener(){
+//        try {
+//            hilo.join();
+//            ejecutar = false;
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
     
 }
