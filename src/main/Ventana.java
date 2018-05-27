@@ -90,8 +90,14 @@ public class Ventana extends JFrame /*implements Runnable*/{
     int xPaleta = 346;
     int yPaleta = 430;
     
+    int nivel = 2;
+    int nivelesHechos = 1;
+    
     int [] xBloques0 = {20,90,165,235,325,398,488,558,633,703};
     int [] yBloques0 = {30,55,80};
+    
+    int [] xBloques1 = {20,90,165,235,325,398,488,558,633,703};
+    int [] yBloques2 = {30,55,80};
     
     public final int limitesX [] = {15,778};
     public final int limitesY [] = {15,456};
@@ -103,21 +109,27 @@ public class Ventana extends JFrame /*implements Runnable*/{
     private int [] puntosPaletaY;
     private int [] bloquesColision;
     private boolean [] posiciones = {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
+    private boolean [] posiciones1 = {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
     private int [] posicionesNum = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    private int [] posicionesNum1 = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    private int [] posicionesContadorToques = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    private int [] posicionesRebotes = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     private boolean piso = true;
     private boolean paletaMov = true;
     private int lado;
     private int vidas = 4;
     private boolean [] vecesVidas = {true,true,true,true};
     private boolean [] lateral = {false,false};
+    //MENU
     private int seleccionPelota = 0;
     private int seleccionPaleta = 1;
+    private boolean automatico = false;
     
     int [] tt = {0,0,0};
     Timer tm = new Timer(tt);
     
     public void actualizarPaletaPausa(int dato){
-        System.out.println(vidas);
+        //System.out.println(vidas);
         if (piso){
             if (vidas == 4){
                 xPelota = 45 + xPaleta;
@@ -129,7 +141,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
         }
         else {
             if (vecesVidas[3] && vidas == 4) {
-                System.out.println("SINO");
+                //System.out.println("SINO");
                 xPelota = 45 + xPaleta;
                 yPelota = 410;
                 if (dato == 3){
@@ -138,7 +150,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
             }
             else {
                 if (vecesVidas[2] && vidas == 3){
-                    System.out.println("SINO");
+                    //System.out.println("SINO");
                     xPelota = 45 + xPaleta;
                     yPelota = 410;
                     if (dato == 3){
@@ -147,7 +159,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
                 }
                 else {
                     if (vecesVidas[1] && vidas == 2){
-                        System.out.println("SINO");
+                        //System.out.println("SINO");
                         xPelota = 45 + xPaleta;
                         yPelota = 410;
                         if (dato == 3){
@@ -156,7 +168,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
                     }
                     else {
                         if (vecesVidas[0] && vidas == 1){
-                            System.out.println("SINO");
+                            //System.out.println("SINO");
                             xPelota = 45 + xPaleta;
                             yPelota = 410;
                             if (dato == 3){
@@ -200,26 +212,43 @@ public class Ventana extends JFrame /*implements Runnable*/{
                     ejecutar = false;
                 }
                 else{
-                    
                 }
             }
         }
         dato = -1;
     }
+    private int dato;
+    //Método utilizado para mover la paleta automaticamente
+    public void moverPaletaComputadora(){
+        dato = teclado.movimiento();
+        xPaleta = xPelota - 45;
+        if (xPaleta >= limitesX[1] - 100){
+            xPaleta = limitesX[1] - 100;
+        }
+        else{
+            if (xPaleta <= limitesX[0]+15){
+                if ((xPaleta-15) < 45){
+                    xPaleta = xPaleta - (xPaleta-15);
+                }   
+            }
+        }
+        if (dato == 3){
+            ejecutar = false;
+            paletaMov = false;
+        }
+        else {
+            if (dato == 4){
+                moverPaleta = true;
+                automatico = false;
+            }
+        }
+        System.out.println("Chau");
+        dato = -1;
+    }
     
-    public void actualizar(){
-        
-        //Pelota
-        puntosPelotaX = Colisiones.determinarPuntosX(xPelota, tamañoPelota);
-        puntosPelotaY = Colisiones.determinarPuntosY(yPelota, tamañoPelota);
-        
-        //System.out.println(puntosPelotaX[0]+"|"+puntosPelotaX[1]+"|"+puntosPelotaX[2]+"|"+puntosPelotaX[3]);
-        //System.out.println(puntosPelotaY[0]+"|"+puntosPelotaY[1]+"|"+puntosPelotaY[2]+"|"+puntosPelotaY[3]);
-        
-        //TECLADO ACTUALIZACIÓN
-        //System.out.println(teclado.movimiento());
-        int dato = teclado.movimiento();
-        
+    //Método utilizado para mover la paleta
+    public void moverPaleta(){
+        dato = teclado.movimiento();
         if (dato == 1){
             if (xPaleta >= limitesX[1] - 100 || xPaleta >= limitesX[1] - 110){
                 if (xPaleta != limitesX[1] - 100){
@@ -228,7 +257,6 @@ public class Ventana extends JFrame /*implements Runnable*/{
             }
             else{
                 xPaleta = xPaleta + 12;
-                //System.out.println(xPaleta);
             }            
         }
         else {
@@ -240,7 +268,6 @@ public class Ventana extends JFrame /*implements Runnable*/{
                 }
                 else{
                     xPaleta = xPaleta - 12;
-                    //System.out.println(xPaleta);
                 }
             }
             else{
@@ -248,33 +275,72 @@ public class Ventana extends JFrame /*implements Runnable*/{
                     ejecutar = false;
                     paletaMov = false;
                 }
-                else{
-                    
+                else {
+                    if (dato == 4){
+                        automatico = true;
+                        moverPaleta = false;
+                    }
                 }
             }
+            System.out.println("Hola");
         }
         dato = -1;
+    }
+    private static boolean moverPaleta = true;
+    //Método actualizado para actualizar el dibujo durante -> ejecutar = true <-
+    public void actualizar(){
         
-        //Colisiones entre la pelota y paleta
+        for (int i = 0; i < 30; i++){
+            //System.out.print(posiciones1[i]+"|");
+        }
+        //System.out.println("\n");
+//        for (int i = 0; i < 30; i++){
+//            System.out.print(posicionesRebotes[i]+"|");
+//        }
+        if (moverPaleta){
+            moverPaleta();
+        }
+        if (automatico){
+            moverPaletaComputadora();
+        }
+        
+        
+        
+        //Pelota
+        puntosPelotaX = Colisiones.determinarPuntosX(xPelota, tamañoPelota);
+        puntosPelotaY = Colisiones.determinarPuntosY(yPelota, tamañoPelota);
+        //Paleta
         puntosPaletaX = Colisiones.determinarPuntosX(xPaleta, 100);
         puntosPaletaY = Colisiones.determinarPuntosY(yPaleta, 10);
-//        System.out.println(puntosPaletaX[0]+"|"+puntosPaletaX[1]+"|"+puntosPaletaX[2]+"|"+puntosPaletaX[3]);
-//        System.out.println(puntosPaletaY[0]+"|"+puntosPaletaY[1]+"|"+puntosPaletaY[2]+"|"+puntosPaletaY[3]);        
-//        System.out.println(Colisiones.detecta(puntosPelotaX, puntosPelotaY, puntosPaletaX, puntosPaletaY));
         //Bloques 
         bloquesColision = Colisiones.bloques(puntosPelotaX, puntosPelotaY, xBloques0, yBloques0);
         if (bloquesColision[0] < 0){
             
         }
         else{
-            posiciones[bloquesColision[0]] = false;
-            //System.out.println(posiciones[bloquesColision[0]]);
-            for (int i = 0; i < 30; i++){
-                System.out.print(posiciones[i]+"|");
+            if (nivel == 1){
+                posiciones[bloquesColision[0]] = false;
+                //System.out.println(posiciones[bloquesColision[0]]);
+                for (int i = 0; i < 30; i++){
+                    System.out.print(posiciones[i]+"|");
+                }
+            }
+            else {
+                if (nivel == 2){
+                    if (posicionesContadorToques[bloquesColision[0]] > 2){
+                        posiciones1[bloquesColision[0]] = false;
+                    }
+                    else {
+                        posicionesContadorToques[bloquesColision[0]]++;
+                    }   
+                    System.out.println("Toques: "+posicionesContadorToques[bloquesColision[0]]);
+                }
             }
         }        
         lado = bloquesColision[1];
-        //System.out.println("Y: "+yPelota);
+        
+        //movX = true -> xPelota++
+        //movX = false -> xPelota--
         
         if (xPelota <= limitesX[1]-tamañoPelota && movX == true){
             xPelota++;
@@ -304,45 +370,128 @@ public class Ventana extends JFrame /*implements Runnable*/{
                     vidas--;
                 }
             }
-            if (bloquesColision[0] > 0 && posicionesNum[bloquesColision[0]] == 0){
-                    System.out.println(bloquesColision[0]);
+            if (nivel == 1){
+                if (bloquesColision[0] > 0 && posicionesNum[bloquesColision[0]] == 0){
+                    //System.out.println(bloquesColision[0]);
                     if ((lado == 3 || lado == 4)){
                         movY = false;
                     }
                     posicionesNum[bloquesColision[0]] = bloquesColision[0];
                 }
+            }
+            else {
+                if (nivel == 2){
+                    if (bloquesColision[0] > 0 && posicionesNum1[bloquesColision[0]] == 0){
+                        if (posicionesRebotes[bloquesColision[0]] <= 2){
+                            if ((lado == 3 || lado == 4)){
+                                movY = false;
+                                posicionesRebotes[bloquesColision[0]]++;
+                                if (posicionesRebotes[bloquesColision[0]] == 2){
+                                    posicionesNum1[bloquesColision[0]] = bloquesColision[0];
+                                    movY = false;
+                                }
+                            }
+                        }
+                        else {
+                        }
+                    }
+                }
+            }
         }
         else{
             if (yPelota >= limitesY[0] && movY == false){
                 yPelota--;
                 if (yPelota == limitesY[0]){
                     movY = true;
-                }                
-                if (bloquesColision[0] > 0 && posicionesNum[bloquesColision[0]] == 0){
-                    System.out.println(bloquesColision[0]);
-                    if ((lado == 1 || lado == 2)){
-                        movY = true;
+                }
+                if (nivel == 1){
+                    if (bloquesColision[0] > 0 && posicionesNum[bloquesColision[0]] == 0){
+                        //System.out.println(bloquesColision[0]);
+                        if ((lado == 1 || lado == 2)){
+                            movY = true;
+                        }   
+                        posicionesNum[bloquesColision[0]] = bloquesColision[0];
                     }
-                    posicionesNum[bloquesColision[0]] = bloquesColision[0];
+                }
+                else { 
+                    if (nivel == 2){
+                        if (bloquesColision[0] > 0 && posicionesNum1[bloquesColision[0]] == 0){
+                            if (posicionesRebotes[bloquesColision[0]] <= 2){
+                                if ((lado == 1 || lado == 2)){
+                                    movY = true;
+                                    posicionesRebotes[bloquesColision[0]]++;
+                                    if (posicionesRebotes[bloquesColision[0]] == 2){
+                                        posicionesNum1[bloquesColision[0]] = bloquesColision[0];
+                                        movY = true;
+                                    }
+                                }
+                            }
+                            else{
+                                
+                            }
+                        }
+                    }
                 }
             }
         }
         lateral = Colisiones.lateral(puntosPelotaX, puntosPelotaY, xBloques0, yBloques0);
-        if (lateral[1] && bloquesColision[0] > 0 && posicionesNum[bloquesColision[0]] == 0){
-            movX = true;
-            movY = false;
-        }
-        else {
-            if (lateral[0] && bloquesColision[0] > 0 && posicionesNum[bloquesColision[0]] == 0){
+        if (nivel == 1){
+            if (lateral[1] && bloquesColision[0] > 0 && posicionesNum[bloquesColision[0]] == 0){
                 movX = true;
+                movY = false;
             }
             else {
+                if (lateral[0] && bloquesColision[0] > 0 && posicionesNum[bloquesColision[0]] == 0){
+                   movX = true;
+                }
+                else {
                 
+                }
+            }
+        }
+        else {
+            if (nivel == 2){
+                if (lateral[1] && bloquesColision[0] > 0 && posicionesNum1[bloquesColision[0]] == 0){
+                    if (posicionesRebotes[bloquesColision[0]] <= 2){
+                        movX = true;
+                        movY = false;
+                        posicionesRebotes[bloquesColision[0]]++;
+                        if (posicionesRebotes[bloquesColision[0]] == 2){
+                            posicionesNum1[bloquesColision[0]] = bloquesColision[0];
+                            movX = true;
+                            movY = false;
+                        }
+                    }
+                    
+                }
+                else {
+                    if (lateral[0] && bloquesColision[0] > 0 && posicionesNum1[bloquesColision[0]] == 0){
+                        if (posicionesRebotes[bloquesColision[0]] <= 2){
+                            movX = true;
+                            if (posicionesRebotes[bloquesColision[0]] == 2){
+                                posicionesNum1[bloquesColision[0]] = bloquesColision[0];
+                                movX = true;
+                            }
+                        }
+                    }
+                    else {
+
+                    }
+                }
             }
         }
         
         lado = bloquesColision[1];
-        //System.out.println("Y: "+yPelota);      
+        
+        if (nivel == 2){
+            for (int i = 0; i < 30; i++){
+                if (posicionesNum1[i] == 0 && !posiciones1[i]){
+                    posicionesNum1[i] = i;
+                    posiciones1[i] = false;
+                }
+            }
+        }
+        
         
     }
     
@@ -402,27 +551,57 @@ public class Ventana extends JFrame /*implements Runnable*/{
         g.drawLine(limitesX[0], limitesY[1], limitesX[1], limitesY[1]);        
         
         int contadorInterno = 0;
-        for (int i = 0; i < 10; i++){
-            for (int j = 0; j < 3; j++){
-                if (posiciones[contadorInterno] == false) {
-                    
-                }
-                else{
-                    if (j == 0){
-                        g.drawImage(dibujos.get(5), xBloques0[i], yBloques0[j], 70, 20, this);
+        int contadorInterno1 = 0;
+        if (nivel == 1){
+            for (int i = 0; i < 10; i++){
+                for (int j = 0; j < 3; j++){
+                    if (posiciones[contadorInterno] == false) {
+
                     }
-                    else {
-                        if (j == 1){
-                            g.drawImage(dibujos.get(6), xBloques0[i], yBloques0[j], 70, 20, this);
+                    else{
+                        if (j == 0){
+                            g.drawImage(dibujos.get(5), xBloques0[i], yBloques0[j], 70, 20, this);
                         }
                         else {
-                            if (j == 2){
-                                g.drawImage(dibujos.get(7), xBloques0[i], yBloques0[j], 70, 20, this);
+                            if (j == 1){
+                                g.drawImage(dibujos.get(6), xBloques0[i], yBloques0[j], 70, 20, this);
+                            }
+                            else {
+                                if (j == 2){
+                                    g.drawImage(dibujos.get(7), xBloques0[i], yBloques0[j], 70, 20, this);
+                                }
                             }
                         }
                     }
+                    contadorInterno++;
                 }
-                contadorInterno++;
+            }
+        }
+        else {
+            if (nivel == 2){
+                for (int i = 0; i < 10; i++){
+                    for (int j = 0; j < 3; j++){
+                        if (posiciones1[contadorInterno1] == false) {
+
+                        }
+                        else{
+                            if (j == 0){
+                                g.drawImage(dibujos.get(5), xBloques0[i], yBloques0[j], 70, 20, this);
+                            }
+                            else {
+                                if (j == 1){
+                                    g.drawImage(dibujos.get(6), xBloques0[i], yBloques0[j], 70, 20, this);
+                                }
+                                else {
+                                    if (j == 2){
+                                        g.drawImage(dibujos.get(7), xBloques0[i], yBloques0[j], 70, 20, this);
+                                    }
+                                }
+                            }
+                        }
+                        contadorInterno1++;
+                    }
+            }
             }
         }
         //System.out.println("C: "+contadorInterno);
@@ -464,30 +643,34 @@ public class Ventana extends JFrame /*implements Runnable*/{
         int frames = 0;
         long tiempo = 0;        
         boolean primera = true;
+        float sumatoria = 0;
         
         //Ciclo infinito que no puede ser detenido
         boolean ciclo = true;
         while (ciclo){
-            System.out.println("Hola");
             int dato = teclado.movimiento();
             actualizarPaletaPausa(dato);
             dibujar();
+            Thread.sleep(5);
             //System.out.println(vidas);
             if (dato == 3 && vidas > 0){
                 ejecutar = true;
                 antes = System.nanoTime();
+                
             }
             //Ciclo de ejecución del juego
             while (ejecutar) {
 //                System.out.println("Hola");
-//                ahora = System.nanoTime();
+                ahora = System.nanoTime();
 //                tiempoTranscurrido += (ahora - antes)/tiempoObjetivo;
 //                tiempo += (ahora - antes);
-//                antes = ahora;
+                sumatoria = sumatoria + (ahora - antes);
+                //System.out.println("Sumatoria: "+(sumatoria/1000000000));
+                antes = ahora;
                 
                 actualizar();
                 dibujar();
-                Thread.sleep(15);
+                Thread.sleep(5);
 
 //                if (tiempoTranscurrido >= 1){
 //                    actualizar();
