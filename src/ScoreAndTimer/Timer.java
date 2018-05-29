@@ -10,44 +10,26 @@ package ScoreAndTimer;
  * @author mgonzaloluna
  */
 public class Timer {
-    private int [] relojContador;
-    public Timer(int [] relojContador){
-        this.relojContador = relojContador;
+    private float sumatoria;
+    public Timer(float sumatoria){
+        this.sumatoria = sumatoria;
     }
     
     // ms = relojContador[2]
     // s  = relojContador[1]
     // m  = relojContador[0]
+    String sumatoriaNumerica;
     private String ms,s,m;
     
     public String Contador(){
-        if (relojContador[2] >= 60){
-            relojContador[1]++;
-            relojContador[2] = 0;
-            if (relojContador[1] >= 60){
-                relojContador[1] = 0;
-                relojContador[0]++;
-            }
-        }
-        relojContador[2]++;
-        if (relojContador[2] < 10){
-            ms = ("0"+relojContador[2]);
-        }
-        else {
-            ms = (""+relojContador[2]);
-        }
-        if (relojContador[1] < 10){
-            s = ("0"+relojContador[1]);
-        }
-        else {
-            s = (""+relojContador[1]);
-        }
-        if (relojContador[0] < 10){
-            m = ("0"+relojContador[0]);
-        }
-        else {
-            m = (""+relojContador[0]);
-        }
+        
+        sumatoriaNumerica = Float.toString(sumatoria/1000000000);
+        
+        String [] parte = sumatoriaNumerica.split(".");
+        
+        System.out.println(parte.length);
+        
+        
         return (m+":"+s+":"+ms);
     }   
     

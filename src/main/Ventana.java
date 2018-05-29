@@ -7,6 +7,7 @@ package main;
 import Interacciones.Colisiones;
 import Interacciones.Imagenes;
 import Interacciones.Teclado;
+import ScoreAndTimer.SaveScore;
 import ScoreAndTimer.Timer;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -111,23 +112,21 @@ public class Ventana extends JFrame /*implements Runnable*/{
     private int [] bloquesColision;
     private boolean [] posiciones = {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
     private boolean [] posiciones1 = {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
-    private int [] posicionesNum = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     private int [] posicionesContadorToques = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    private int [] posicionesContadorToquesAnterior = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    private int [] posicionesRebotes = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     private boolean piso = true;
     private boolean paletaMov = true;
     private int lado;
     private int vidas = 4;
     private boolean [] vecesVidas = {true,true,true,true};
-    private boolean [] lateral = {false,false};
     //MENU
     private int seleccionPelota = 0;
     private int seleccionPaleta = 1;
     private boolean automatico = false;
-    
-    int [] tt = {0,0,0};
-    Timer tm = new Timer(tt);
+    private int score = 0;
+    private String scoreString = "000000000";
+    private float sumatoria = 0;
+
+    Timer tm;
     
     public void actualizarPaletaPausa(int dato){
         //System.out.println(vidas);
@@ -315,10 +314,35 @@ public class Ventana extends JFrame /*implements Runnable*/{
     private int velocidad = 1;
     private boolean [] colisionLateral;
     
-    private int [] contadoresFase1 = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    private int [] contadoresFase2 = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     private int i = 0;
     private int colisionAnterior;
+    private int contadorRestante = 30;
+    
+    public void reiniciar(){
+        i = 0;
+        contadorRestante = 30;
+        velocidad = 1;
+        
+        contador = 0;
+        direccion = true; movX = true; movY = true;
+        xPelota = 387; yPelota = 410; xPaleta = 346; yPaleta = 430;
+
+        nivelesHechos++;
+        
+        for (int j = 0; j < posiciones.length; j++){
+            posiciones[j] = true;
+            posiciones1[j] = true;
+            posicionesContadorToques[j] = 0;
+        }     
+        
+        for (int j = 0; j < vecesVidas.length; j++){
+            vecesVidas[j] = true;
+        }
+        
+        piso = true;
+        paletaMov = true;   
+        ejecutar = false;
+    }
     
     public void actualizar(){
         if (i == 0){
@@ -331,10 +355,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
             colisionAnterior = bloquesColision[0];
         }
          
-        moverPaleta();
-        
-        
-        
+        moverPaleta();      
         
         //Pelota
         puntosPelotaX = Colisiones.determinarPuntosX(xPelota, tamañoPelota);
@@ -395,10 +416,15 @@ public class Ventana extends JFrame /*implements Runnable*/{
         
         if (nivel == 1){
             if (bloquesColision[0] > -1 && posiciones[bloquesColision[0]]){
-                posiciones[bloquesColision[0]] = false;
+                
+                posiciones[bloquesColision[0]] = false;                
+                score = SaveScore.contadorScore(score, bloquesColision[0]);
+                scoreString = SaveScore.completarScore(score);
+                contadorRestante--;
+                
                 if (lado == 1 || lado == 2){
                     movY = true;
-                    System.out.println(colisionLateral[0]);
+                    //System.out.println(colisionLateral[0]);
                     if (colisionLateral[0]){
                         movX = false;
                     }
@@ -424,7 +450,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
                 if (bloquesColision[0] > -1 && posiciones1[bloquesColision[0]]){
                     if (lado == 1 || lado == 2){
                         movY = true;
-                        System.out.println(colisionLateral[0]);
+                        //System.out.println(colisionLateral[0]);
                         if (colisionLateral[0]){
                             movX = false;
                         }
@@ -446,15 +472,21 @@ public class Ventana extends JFrame /*implements Runnable*/{
                     System.out.println("Antes"+colisionAnterior+"|Ahora"+bloquesColision[0]);
                     if (colisionAnterior != bloquesColision[0]){
                         posicionesContadorToques[bloquesColision[0]]++;
-                        System.out.println(posicionesContadorToques[bloquesColision[0]]);
+                        //System.out.println(posicionesContadorToques[bloquesColision[0]]);
                         if (posicionesContadorToques[bloquesColision[0]] >= 2){
+                            
                             posiciones1[bloquesColision[0]] = false;
+                            score = SaveScore.contadorScore(score, bloquesColision[0]);
+                            scoreString = SaveScore.completarScore(score);
+                            contadorRestante--;
+                            
                         }
                     }
                 }
             }
         }
         
+        System.out.println(contadorRestante);
         
     }
     
@@ -500,6 +532,13 @@ public class Ventana extends JFrame /*implements Runnable*/{
             case 3: g.drawImage(dibujos.get(3), xPelota, yPelota, tamañoPelota, tamañoPelota, this);
             break;
             case 4: g.drawImage(dibujos.get(4), xPelota, yPelota, tamañoPelota, tamañoPelota, this);
+        }
+        
+        if (score < 999999999){
+            g.drawString("PUNTAJE: "+scoreString, 346, 482);
+        }
+        else{
+            g.drawString("PUNTAJE: "+"INCREIBLE", 346, 482);
         }
         
         g.drawString("VIDAS: ", 650, 482);
@@ -571,16 +610,33 @@ public class Ventana extends JFrame /*implements Runnable*/{
 
                         }
                         else{
-                            if (j == 0){
-                                g.drawImage(dibujos.get(6), xBloques0[i], yBloques0[j], 70, 20, this);
-                            }
-                            else {
-                                if (j == 1){
-                                    g.drawImage(dibujos.get(5), xBloques0[i], yBloques0[j], 70, 20, this);
+                            if (posicionesContadorToques[contadorInterno1] == 0){
+                                if (j == 0){
+                                    g.drawImage(dibujos.get(6), xBloques0[i], yBloques0[j], 70, 20, this);
                                 }
                                 else {
-                                    if (j == 2){
-                                        g.drawImage(dibujos.get(7), xBloques0[i], yBloques0[j], 70, 20, this);
+                                    if (j == 1){
+                                        g.drawImage(dibujos.get(5), xBloques0[i], yBloques0[j], 70, 20, this);
+                                    }
+                                    else {
+                                        if (j == 2){
+                                            g.drawImage(dibujos.get(7), xBloques0[i], yBloques0[j], 70, 20, this);
+                                        }
+                                    }
+                                }
+                            }
+                            else{
+                                if (j == 0){
+                                    g.drawImage(dibujos.get(13), xBloques0[i], yBloques0[j], 70, 20, this);
+                                }
+                                else {
+                                    if (j == 1){
+                                        g.drawImage(dibujos.get(12), xBloques0[i], yBloques0[j], 70, 20, this);
+                                    }
+                                    else {
+                                        if (j == 2){
+                                            g.drawImage(dibujos.get(14), xBloques0[i], yBloques0[j], 70, 20, this);
+                                        }
                                     }
                                 }
                             }
@@ -601,7 +657,6 @@ public class Ventana extends JFrame /*implements Runnable*/{
             }
         }
         
-        g.drawString("FPS: "+promedioFPS, 10, 15);
         if (ejecutar){
             g.drawString("TIEMPO: "+tm.Contador(), 10, 35);
         }
@@ -614,21 +669,12 @@ public class Ventana extends JFrame /*implements Runnable*/{
         buffer.show();
         
     }
-    
-    private final int FPS = 60;
-    private final double tiempoObjetivo = 1000000000/FPS;
-    private double tiempoTranscurrido = 0;
-    private int promedioFPS = FPS;
-    
+        
     //Ejecución
     public void ciclo() throws InterruptedException {
         
         long ahora;
         long antes = System.nanoTime();
-        int frames = 0;
-        long tiempo = 0;        
-        boolean primera = true;
-        float sumatoria = 0;
         
         //Ciclo infinito que no puede ser detenido
         boolean ciclo = true;        
@@ -650,10 +696,13 @@ public class Ventana extends JFrame /*implements Runnable*/{
 //                tiempoTranscurrido += (ahora - antes)/tiempoObjetivo;
 //                tiempo += (ahora - antes);
                 sumatoria = sumatoria + (ahora - antes);
+                tm = new Timer(sumatoria);
                 //System.out.println("Sumatoria: "+(sumatoria/1000000000));
                 antes = ahora;
                 
-                
+                if (contadorRestante == 0){
+                    reiniciar();
+                }
                 
                 actualizar();
                 dibujar();

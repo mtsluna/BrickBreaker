@@ -72,6 +72,17 @@ public class Imagenes {
             img = ImageIO.read(new File("fondo_1.png"));
             imagenes.add(img);
             
+            //LADRILLOS ROTOS
+            //12
+            img = ImageIO.read(new File("ladrillo_roto_0.png"));
+            imagenes.add(img);
+            //13
+            img = ImageIO.read(new File("ladrillo_roto_1.png"));
+            imagenes.add(img);
+            //14
+            img = ImageIO.read(new File("ladrillo_roto_2.png"));
+            imagenes.add(img);
+            
         } 
         catch (Exception e) {
             
