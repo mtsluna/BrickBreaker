@@ -125,8 +125,6 @@ public class Ventana extends JFrame /*implements Runnable*/{
     private int score = 0;
     private String scoreString = "000000000";
     private float sumatoria = 0;
-
-    Timer tm;
     
     public void actualizarPaletaPausa(int dato){
         //System.out.println(vidas);
@@ -658,7 +656,20 @@ public class Ventana extends JFrame /*implements Runnable*/{
         }
         
         if (ejecutar){
-            g.drawString("TIEMPO: "+tm.Contador(), 10, 35);
+            String minutos = "", segundos = "";
+            if (tt[1] < 10){
+                segundos = segundos.concat("0"+tt[1]);
+            }
+            else{
+                segundos = segundos.concat(""+tt[1]);
+            }
+            if (tt[0] < 10){
+                minutos = minutos.concat("0"+tt[0]);
+            }
+            else{
+                minutos = minutos.concat(""+tt[0]);
+            }
+            g.drawString("TIEMPO: "+minutos+":"+segundos, 10, 35);
         }
         else{
             g.drawString("TIEMPO: PAUSADO", 10, 35);
@@ -669,6 +680,8 @@ public class Ventana extends JFrame /*implements Runnable*/{
         buffer.show();
         
     }
+    
+    private int [] tt = {0,0,0};
         
     //Ejecución
     public void ciclo() throws InterruptedException {
@@ -682,7 +695,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
             int dato = teclado.movimiento();
             actualizarPaletaPausa(dato);
             dibujar();
-            Thread.sleep(5);
+            Thread.sleep(2);
             //System.out.println(vidas);
             if (dato == 3 && vidas > 0){
                 ejecutar = true;
@@ -696,9 +709,21 @@ public class Ventana extends JFrame /*implements Runnable*/{
 //                tiempoTranscurrido += (ahora - antes)/tiempoObjetivo;
 //                tiempo += (ahora - antes);
                 sumatoria = sumatoria + (ahora - antes);
-                tm = new Timer(sumatoria);
-                //System.out.println("Sumatoria: "+(sumatoria/1000000000));
                 antes = ahora;
+                
+                if (sumatoria/100000000 > 1){
+                    tt[2]++;
+                }
+                if (sumatoria/1000000000 > 1){
+                    tt[1]++;
+                    if (tt[1] > 60){
+                        tt[0]++;
+                        tt[1] = 0;
+                    }
+                    sumatoria = 0;
+                }
+                
+                System.out.println(tt[0]+""+tt[1]);
                 
                 if (contadorRestante == 0){
                     reiniciar();
@@ -706,7 +731,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
                 
                 actualizar();
                 dibujar();
-                Thread.sleep(5);
+                Thread.sleep(2);
 
 //                if (tiempoTranscurrido >= 1){
 //                    actualizar();

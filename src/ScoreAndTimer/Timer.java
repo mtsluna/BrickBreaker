@@ -19,18 +19,20 @@ public class Timer {
     // s  = relojContador[1]
     // m  = relojContador[0]
     String sumatoriaNumerica;
-    private String ms,s,m;
     
-    public String Contador(){
+    public static String Contador(float sumatoria){
+        int ms,s = 0,m = 0;
+        String sumatoriaString = ""+sumatoria;
+        String segundos = "",minutos = "";
         
-        sumatoriaNumerica = Float.toString(sumatoria/1000000000);
+        segundos = ""+(int)sumatoria;
         
-        String [] parte = sumatoriaNumerica.split(".");
+        m = (int)Float.parseFloat(segundos)/60;
+        if (m < 10){
+            minutos = "0"+m;
+        }
         
-        System.out.println(parte.length);
-        
-        
-        return (m+":"+s+":"+ms);
+        return minutos+":"+segundos;
     }   
     
 }
