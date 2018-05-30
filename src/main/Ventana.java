@@ -7,11 +7,13 @@ package main;
 import Interacciones.Colisiones;
 import Interacciones.Imagenes;
 import Interacciones.Teclado;
-import ScoreAndTimer.SaveScore;
-import ScoreAndTimer.Timer;
+import Adicionales.SaveScore;
+import Adicionales.Timer;
+import Adicionales.Velocidad;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
@@ -183,7 +185,6 @@ public class Ventana extends JFrame /*implements Runnable*/{
         }
         if (dato == 1 && paletaMov){
             if (xPaleta >= limitesX[1] - 100 || xPaleta >= limitesX[1] - 110){
-                System.out.println("1");
                 if (xPaleta != limitesX[1] - 100){
                     xPaleta = xPaleta + ((limitesX[1]-100) - xPaleta);
                 }
@@ -346,7 +347,6 @@ public class Ventana extends JFrame /*implements Runnable*/{
         if (i == 0){
             //System.out.println(colisionAnterior);
             colisionAnterior = -1;
-            System.out.println(i);
             i++;
         }
         else {
@@ -419,6 +419,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
                 score = SaveScore.contadorScore(score, bloquesColision[0]);
                 scoreString = SaveScore.completarScore(score);
                 contadorRestante--;
+                velocidad = Velocidad.variacion(velocidad);
                 
                 if (lado == 1 || lado == 2){
                     movY = true;
@@ -467,7 +468,6 @@ public class Ventana extends JFrame /*implements Runnable*/{
                             }
                         }   
                     }
-                    System.out.println("Antes"+colisionAnterior+"|Ahora"+bloquesColision[0]);
                     if (colisionAnterior != bloquesColision[0]){
                         posicionesContadorToques[bloquesColision[0]]++;
                         //System.out.println(posicionesContadorToques[bloquesColision[0]]);
@@ -477,21 +477,21 @@ public class Ventana extends JFrame /*implements Runnable*/{
                             score = SaveScore.contadorScore(score, bloquesColision[0]);
                             scoreString = SaveScore.completarScore(score);
                             contadorRestante--;
+                            velocidad = Velocidad.variacion(velocidad);
                             
                         }
                     }
                 }
             }
         }
-        
-        System.out.println(contadorRestante);
-        
     }
     
     //Uso del timer
     
     Imagenes imagenes = new Imagenes();
     List<BufferedImage> dibujos = imagenes.cargarImagenes();
+    private boolean menuPrincipal = true;
+    private boolean dibujarMenu = true;
     
     public void dibujar(){
         buffer = canvas.getBufferStrategy();
@@ -675,6 +675,19 @@ public class Ventana extends JFrame /*implements Runnable*/{
             g.drawString("TIEMPO: PAUSADO", 10, 35);
         }
         
+        if (dibujarMenu){
+            g.fillRect(limitesX[0], limitesY[0], 764, 475);
+            g.setColor(Color.yellow);
+            g.setFont(new Font("Impact", Font.BOLD, 46));
+            g.drawString("BRICK BREAKER", ((limitesX[1]-limitesX[0])/2)-138, 100);
+            g.setColor(Color.magenta);
+            g.drawString("BRICK BREAKER", ((limitesX[1]-limitesX[0])/2)-134, 100);
+            g.setColor(Color.cyan);
+            g.drawString("BRICK BREAKER", ((limitesX[1]-limitesX[0])/2)-138, 104);
+            g.setColor(Color.white);
+            g.drawString("BRICK BREAKER", ((limitesX[1]-limitesX[0])/2)-138, 96);
+        }
+        
         //Dibujo area fin
         g.dispose();
         buffer.show();
@@ -690,63 +703,65 @@ public class Ventana extends JFrame /*implements Runnable*/{
         long antes = System.nanoTime();
         
         //Ciclo infinito que no puede ser detenido
-        boolean ciclo = true;        
-        while (ciclo){
+        boolean ciclo = true;
+        while (menuPrincipal){
             int dato = teclado.movimiento();
-            actualizarPaletaPausa(dato);
             dibujar();
-            Thread.sleep(2);
-            //System.out.println(vidas);
-            if (dato == 3 && vidas > 0){
-                ejecutar = true;
-                antes = System.nanoTime();
-                
-            }
-            //Ciclo de ejecución del juego
-            while (ejecutar) {
-//                System.out.println("Hola");
-                ahora = System.nanoTime();
-//                tiempoTranscurrido += (ahora - antes)/tiempoObjetivo;
-//                tiempo += (ahora - antes);
-                sumatoria = sumatoria + (ahora - antes);
-                antes = ahora;
-                
-                if (sumatoria/100000000 > 1){
-                    tt[2]++;
-                }
-                if (sumatoria/1000000000 > 1){
-                    tt[1]++;
-                    if (tt[1] > 60){
-                        tt[0]++;
-                        tt[1] = 0;
-                    }
-                    sumatoria = 0;
-                }
-                
-                System.out.println(tt[0]+""+tt[1]);
-                
-                if (contadorRestante == 0){
-                    reiniciar();
-                }
-                
-                actualizar();
-                dibujar();
-                Thread.sleep(2);
+            if (dato == 5){
+                dibujarMenu = false;
+                while (ciclo){
+                    dato = teclado.movimiento();
+                    actualizarPaletaPausa(dato);
+                    dibujar();
+                    Thread.sleep(5);
+                    if (dato == 3 && vidas > 0){
+                        ejecutar = true;
+                        antes = System.nanoTime();
 
-//                if (tiempoTranscurrido >= 1){
-//                    actualizar();
-//                    dibujar();
-//                    tiempoTranscurrido--;
-//                    frames++;
-//                }
-//                if (tiempo >= 1000000000){
-//                    promedioFPS = frames;
-//                    frames = 0;
-//                    tiempo = 0;
-//                }
+                    }
+                    //Ciclo de ejecución del juego
+                    while (ejecutar) {
+        //                System.out.println("Hola");
+                        ahora = System.nanoTime();
+        //                tiempoTranscurrido += (ahora - antes)/tiempoObjetivo;
+        //                tiempo += (ahora - antes);
+                        antes = ahora;
+
+                        if (sumatoria/100000000 > 1){
+                            tt[2]++;
+                        }
+                        if (sumatoria/1000000000 > 1){
+                            tt[1]++;
+                            if (tt[1] > 60){
+                                tt[0]++;
+                                tt[1] = 0;
+                            }
+                            sumatoria = 0;
+                        }
+
+                        if (contadorRestante == 0){
+                            reiniciar();
+                        }
+
+                        actualizar();
+                        dibujar();
+                        Thread.sleep(5);
+
+        //                if (tiempoTranscurrido >= 1){
+        //                    actualizar();
+        //                    dibujar();
+        //                    tiempoTranscurrido--;
+        //                    frames++;
+        //                }
+        //                if (tiempo >= 1000000000){
+        //                    promedioFPS = frames;
+        //                    frames = 0;
+        //                    tiempo = 0;
+        //                }
+                    }
+                }
             }
         }
-        
 //        detener();
     }
     
