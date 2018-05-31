@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -127,6 +128,8 @@ public class Ventana extends JFrame /*implements Runnable*/{
     private int score = 0;
     private String scoreString = "000000000";
     private float sumatoria = 0;
+    private int seleccionMenu = 0;
+    private boolean skins = true;
     
     public void actualizarPaletaPausa(int dato){
         //System.out.println(vidas);
@@ -506,7 +509,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
         g.clearRect(0, 0, WIDTH, HEIGHT);
         
         //Relleno area de juego
-        g.setColor(Color.lightGray);
+        g.setColor(Color.black);
         g.fillRect(15, 15, 763, 441);
         //Contorneado
         g.setColor(Color.black);
@@ -676,17 +679,57 @@ public class Ventana extends JFrame /*implements Runnable*/{
         }
         
         if (dibujarMenu){
+            g.setColor(Color.black);
             g.fillRect(limitesX[0], limitesY[0], 764, 475);
+            g.setColor(Color.white);
+            g.drawString("[<-] Mover a la izquierda || [ENTER] Seleccionar || Mover a la derecha [->]", 200, 485);
+            
+            //Titulo
             g.setColor(Color.yellow);
             g.setFont(new Font("Impact", Font.BOLD, 46));
-            g.drawString("BRICK BREAKER", ((limitesX[1]-limitesX[0])/2)-138, 100);
+            g.drawString("BRICK BREAKER", ((limitesX[1]-limitesX[0])/2)-138, 96);
+            g.fillRect(((limitesX[1]-limitesX[0])/2)-138, 31, 320, 10);
+            g.fillRect(((limitesX[1]-limitesX[0])/2)-138, 116, 320, 10);
             g.setColor(Color.magenta);
             g.drawString("BRICK BREAKER", ((limitesX[1]-limitesX[0])/2)-134, 100);
+            g.fillRect(((limitesX[1]-limitesX[0])/2)-134, 35, 320, 10);
+            g.fillRect(((limitesX[1]-limitesX[0])/2)-134, 120, 320, 10);
             g.setColor(Color.cyan);
             g.drawString("BRICK BREAKER", ((limitesX[1]-limitesX[0])/2)-138, 104);
+            g.fillRect(((limitesX[1]-limitesX[0])/2)-138, 39, 320, 10);
+            g.fillRect(((limitesX[1]-limitesX[0])/2)-138, 124, 320, 10);
             g.setColor(Color.white);
-            g.drawString("BRICK BREAKER", ((limitesX[1]-limitesX[0])/2)-138, 96);
+            g.drawString("BRICK BREAKER", ((limitesX[1]-limitesX[0])/2)-138, 100);
+            g.fillRect(((limitesX[1]-limitesX[0])/2)-138, 35, 320, 10);
+            g.fillRect(((limitesX[1]-limitesX[0])/2)-138, 120, 320, 10);
+            
+            int [] x = {100, 321, 538};
+            int y = 390;
+            
+            g.setColor(Color.magenta);
+            g.fillRect(x[seleccionMenu]-12, y-12, 162, 87);
+            g.setColor(Color.yellow);
+            g.fillRect(x[seleccionMenu]-8, y-8, 158, 83);
+            g.setColor(Color.cyan);
+            g.fillRect(x[seleccionMenu]-4, y-4, 154, 79);
+            
+            g.setColor(Color.white);
+            g.fillRect(100, y, 150, 75);
+            g.fillRect(538, y, 150, 75);
+            g.fillRect(((limitesX[1]-limitesX[0])/2)-60, y, 150, 75);
+                        
+            g.setColor(Color.black);
+            g.drawString("JUGAR", x[0]+10, y+55);
+            g.drawString("SKINS", x[1]+10, y+55);
+            g.drawString("INFO", x[2]+28, y+55);            
+            
+            if (!skins){
+                g.setColor(Color.white);
+                g.fillRect(200, 200, 100, 100);
+            }
         }
+        
+        
         
         //Dibujo area fin
         g.dispose();
@@ -707,7 +750,35 @@ public class Ventana extends JFrame /*implements Runnable*/{
         while (menuPrincipal){
             int dato = teclado.movimiento();
             dibujar();
-            if (dato == 5){
+            if (dato == 1){
+                if (seleccionMenu < 2){
+                    seleccionMenu++;
+                }
+                else{
+                    seleccionMenu = 0;
+                }
+            }
+            else{
+                if (dato == 2){
+                    if (seleccionMenu > 0){
+                        seleccionMenu--;
+                    }
+                    else{
+                        seleccionMenu = 2;
+                    }
+                }
+            }
+            if (dato == 5 && seleccionMenu == 1){
+                skins = false;
+                while (!skins){
+                    dato = -1;
+                    System.out.println(dato);
+                    if (dato == 5){
+                        skins = true;
+                    }
+                }
+            }
+            if (dato == 5 && seleccionMenu == 0){
                 dibujarMenu = false;
                 while (ciclo){
                     dato = teclado.movimiento();
