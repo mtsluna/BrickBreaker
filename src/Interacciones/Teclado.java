@@ -13,13 +13,15 @@ import java.awt.event.KeyListener;
  */
 public class Teclado implements KeyListener{
     
-    public static boolean derecha,izquierda,pausa,a,enter;
+    public static boolean derecha,izquierda,pausa,a,enter,arriba,abajo;
     public Teclado(){
         derecha = false;
         izquierda = false;
         pausa = false;
         a = false;
         enter = false;
+        arriba = false;
+        abajo = false;
     }
     
     public int movimiento(){
@@ -46,6 +48,14 @@ public class Teclado implements KeyListener{
             enter = false;
             return 5;
         }
+        if (arriba){
+            arriba = false;
+            return 6;
+        }
+        if (abajo){
+            abajo = false;
+            return 7;
+        }
         return 0;
     }
 
@@ -66,6 +76,12 @@ public class Teclado implements KeyListener{
         }
         if (tecla == KeyEvent.VK_ENTER){
             enter = true;
+        }
+        if (tecla == KeyEvent.VK_UP){
+            arriba = true;
+        }
+        if (tecla == KeyEvent.VK_DOWN){
+            abajo = true;
         }
     }
 

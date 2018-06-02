@@ -12,7 +12,7 @@ package Adicionales;
 public class Velocidad {
     
     public static int variacion(int velocidad){
-        int aleatorioVelocidad = (int)(Math.random()*((3-1)+1))+1;
+        int aleatorioVelocidad = (int)(Math.random()*((5-1)+1))+1;
         System.out.println("Aleatorio: "+aleatorioVelocidad);
         if (aleatorioVelocidad == 2){
             if (velocidad < 2){

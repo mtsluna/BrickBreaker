@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.shape.SVGPath;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -95,6 +97,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
     int xPaleta = 346;
     int yPaleta = 430;
     
+    int contadorNivel = 1;
     int nivel = 2;
     int nivelesHechos = 1;
     
@@ -509,8 +512,8 @@ public class Ventana extends JFrame /*implements Runnable*/{
         g.clearRect(0, 0, WIDTH, HEIGHT);
         
         //Relleno area de juego
-        g.setColor(Color.black);
-        g.fillRect(15, 15, 763, 441);
+//        g.setColor(Color.black);
+//        g.fillRect(15, 15, 763, 441);
         //Contorneado
         g.setColor(Color.black);
         g.drawRect(15, 15, 763, 441);
@@ -534,6 +537,8 @@ public class Ventana extends JFrame /*implements Runnable*/{
             break;
             case 4: g.drawImage(dibujos.get(4), xPelota, yPelota, tamañoPelota, tamañoPelota, this);
         }
+        
+        g.drawString("N: "+contadorNivel+"| D: "+nivel, 20, 482);
         
         if (score < 999999999){
             g.drawString("PUNTAJE: "+scoreString, 346, 482);
@@ -672,10 +677,10 @@ public class Ventana extends JFrame /*implements Runnable*/{
             else{
                 minutos = minutos.concat(""+tt[0]);
             }
-            g.drawString("TIEMPO: "+minutos+":"+segundos, 10, 35);
+            g.drawString("| TIEMPO: "+minutos+":"+segundos, 100, 482);
         }
         else{
-            g.drawString("TIEMPO: PAUSADO", 10, 35);
+            g.drawString("| TIEMPO: PAUSADO", 100, 482);
         }
         
         if (dibujarMenu){
@@ -707,9 +712,9 @@ public class Ventana extends JFrame /*implements Runnable*/{
             int y = 390;
             
             g.setColor(Color.magenta);
-            g.fillRect(x[seleccionMenu]-12, y-12, 162, 87);
+            g.fillRect(x[seleccionMenu]-12, y-12, 154, 79);
             g.setColor(Color.yellow);
-            g.fillRect(x[seleccionMenu]-8, y-8, 158, 83);
+            g.fillRect(x[seleccionMenu]-8, y-8, 154, 79);
             g.setColor(Color.cyan);
             g.fillRect(x[seleccionMenu]-4, y-4, 154, 79);
             
@@ -724,8 +729,19 @@ public class Ventana extends JFrame /*implements Runnable*/{
             g.drawString("INFO", x[2]+28, y+55);            
             
             if (!skins){
+                g.setColor(Color.cyan); g.fillRect(338, 188, 100, 100);
+                g.setColor(Color.yellow); g.fillRect(342, 192, 100, 100);
+                g.setColor(Color.magenta); g.fillRect(346, 196, 100, 100);
                 g.setColor(Color.white);
-                g.fillRect(200, 200, 100, 100);
+                
+                g.drawImage(dibujos.get(15), 390, 160, 20, 20, this);
+                g.drawImage(dibujos.get(16), 390, 310, 20, 20, this);
+                g.drawImage(dibujos.get(seleccionPelota), 350, 200, 100, 100, this);
+            }
+            if (menuScore){
+                g.setColor(Color.black);
+                g.fillRect(limitesX[0], limitesY[0], 764, 475);
+                g.drawImage(dibujos.get(0), 20, 20, 200, 200, this);
             }
         }
         
@@ -738,7 +754,9 @@ public class Ventana extends JFrame /*implements Runnable*/{
     }
     
     private int [] tt = {0,0,0};
-        
+    private boolean menuScore = false;
+    SaveScore sc = new SaveScore();
+    
     //Ejecución
     public void ciclo() throws InterruptedException {
         
@@ -747,6 +765,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
         
         //Ciclo infinito que no puede ser detenido
         boolean ciclo = true;
+        
         while (menuPrincipal){
             int dato = teclado.movimiento();
             dibujar();
@@ -768,17 +787,39 @@ public class Ventana extends JFrame /*implements Runnable*/{
                     }
                 }
             }
-            if (dato == 5 && seleccionMenu == 1){
-                skins = false;
-                while (!skins){
-                    dato = -1;
-                    System.out.println(dato);
-                    if (dato == 5){
-                        skins = true;
+            System.out.println(seleccionPelota);
+            if (dato == 6){
+                if (seleccionPelota == 4){
+                    seleccionPelota = 0;
+                }
+                else{
+                    if (seleccionPelota < 4){
+                        seleccionPelota++;
                     }
                 }
             }
+            else {
+                if (dato == 7){
+                    if (seleccionPelota > 0){
+                        seleccionPelota--;
+                    }
+                    else{
+                        if (seleccionPelota == 0){
+                            seleccionPelota = 4;
+                        }
+                    }
+                }
+            }
+            if (seleccionMenu == 1){
+                skins = false;
+            }
+            else {
+                if (seleccionMenu != 1){
+                    skins = true;
+                }
+            }
             if (dato == 5 && seleccionMenu == 0){
+                skins = true;
                 dibujarMenu = false;
                 while (ciclo){
                     dato = teclado.movimiento();
@@ -796,8 +837,8 @@ public class Ventana extends JFrame /*implements Runnable*/{
                         ahora = System.nanoTime();
         //                tiempoTranscurrido += (ahora - antes)/tiempoObjetivo;
         //                tiempo += (ahora - antes);
+                        sumatoria = sumatoria + (ahora - antes);
                         antes = ahora;
-
                         if (sumatoria/100000000 > 1){
                             tt[2]++;
                         }
@@ -812,45 +853,19 @@ public class Ventana extends JFrame /*implements Runnable*/{
 
                         if (contadorRestante == 0){
                             reiniciar();
+                            contadorNivel++;
                         }
 
                         actualizar();
                         dibujar();
                         Thread.sleep(5);
-
-        //                if (tiempoTranscurrido >= 1){
-        //                    actualizar();
-        //                    dibujar();
-        //                    tiempoTranscurrido--;
-        //                    frames++;
-        //                }
-        //                if (tiempo >= 1000000000){
-        //                    promedioFPS = frames;
-        //                    frames = 0;
-        //                    tiempo = 0;
-        //                }
+                        if (vidas == 0){
+                            JOptionPane.showMessageDialog(this, sc.leerScore(2));
+                        }
                     }
+                    
                 }
             }
         }
-//        detener();
     }
-    
-//    //Iniciar hilo
-//    private void iniciar(){
-//        hilo = new Thread(this);
-//        hilo.start();
-//        ejecutar = false;
-//    }
-//    
-//    //Detener hilo
-//    private void detener(){
-//        try {
-//            hilo.join();
-//            ejecutar = false;
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
-    
 }

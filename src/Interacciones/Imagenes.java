@@ -83,6 +83,14 @@ public class Imagenes {
             img = ImageIO.read(new File("ladrillo_roto_2.png"));
             imagenes.add(img);
             
+            //FLECHAS
+            //15
+            img = ImageIO.read(new File("flecha_arriba.png"));
+            imagenes.add(img);
+            //16
+            img = ImageIO.read(new File("flecha_abajo.png"));
+            imagenes.add(img);
+            
         } 
         catch (Exception e) {
             

@@ -10,6 +10,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -33,7 +34,7 @@ public class SaveScore {
     
     public void guardarScore(){
         try {
-            archivo = new FileWriter("Scores");
+            archivo = new FileWriter("Scores.txt");
             pw = new PrintWriter(archivo);
             
             for (int i = 0; i < 5; i++){
@@ -48,21 +49,22 @@ public class SaveScore {
     }
     public String leerScore(int score){
         try {
-            archivoLectura = new FileReader("Scores.txt");
+            archivoLectura = new FileReader(new File("Scores.txt"));
             archivoLecturaBuffer = new BufferedReader(archivoLectura);
-            while ((texto = archivoLecturaBuffer.readLine()) != null){
-                
-                System.out.println("Hola");
-                for(int i = 0; i <= 11; i++){
-                    char letra = texto.charAt(i);
-                    System.out.println(letra);
+
+            String linea;
+            int i = 0;
+            while((linea=archivoLecturaBuffer.readLine())!=null){
+                if (i == score){
+                    return linea;
                 }
-                
+                i++;
             }
-            
-        } catch (Exception e) {
         }
-        return texto;
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return "No disponible";        
     }
     
     int x = 0;
