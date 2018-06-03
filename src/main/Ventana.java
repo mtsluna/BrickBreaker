@@ -122,7 +122,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
     private boolean piso = true;
     private boolean paletaMov = true;
     private int lado;
-    private int vidas = 4;
+    private int vidas = 1;
     private boolean [] vecesVidas = {true,true,true,true};
     //MENU
     private int seleccionPelota = 0;
@@ -510,7 +510,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
         //Dibujo area inicio
         
         g.clearRect(0, 0, WIDTH, HEIGHT);
-        
+                        
         //Relleno area de juego
 //        g.setColor(Color.black);
 //        g.fillRect(15, 15, 763, 441);
@@ -663,6 +663,30 @@ public class Ventana extends JFrame /*implements Runnable*/{
             }
         }
         
+        if (menuScore){
+            g.setColor(Color.black);
+            g.fillRect(limitesX[0], limitesY[0], 764, 475);
+            g.setFont(new Font("Impact", Font.BOLD, 46));
+            
+            g.setColor(Color.yellow);
+            g.drawString("PERDISTE", ((limitesX[1]-limitesX[0])/2)-68, 88);
+            g.setColor(Color.cyan);
+            g.drawString("PERDISTE", ((limitesX[1]-limitesX[0])/2)-72, 92);
+            g.setColor(Color.magenta);
+            g.drawString("PERDISTE", ((limitesX[1]-limitesX[0])/2)-76, 96);
+            
+            g.setColor(Color.white);            
+            g.drawString("PERDISTE", ((limitesX[1]-limitesX[0])/2)-80, 100);
+            
+            g.setColor(Color.white);
+            int agregado = 40;            
+            for (int i = 0; i < 5; i++){
+                g.drawString(sc.leerScore(i), ((limitesX[1]-limitesX[0])/2)-80, 250+(agregado*i));
+            }
+            g.drawImage(dibujos.get(seleccionPelota), ((limitesX[1]-limitesX[0])/2)-80, 250+(agregado*seleccionScore), 20, 20, this);
+            g.setColor(Color.black);
+        }
+        
         if (ejecutar){
             String minutos = "", segundos = "";
             if (tt[1] < 10){
@@ -738,11 +762,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
                 g.drawImage(dibujos.get(16), 390, 310, 20, 20, this);
                 g.drawImage(dibujos.get(seleccionPelota), 350, 200, 100, 100, this);
             }
-            if (menuScore){
-                g.setColor(Color.black);
-                g.fillRect(limitesX[0], limitesY[0], 764, 475);
-                g.drawImage(dibujos.get(0), 20, 20, 200, 200, this);
-            }
+            
         }
         
         
@@ -756,10 +776,11 @@ public class Ventana extends JFrame /*implements Runnable*/{
     private int [] tt = {0,0,0};
     private boolean menuScore = false;
     SaveScore sc = new SaveScore();
-    
+    private int seleccionScore = 0;
+        
     //Ejecución
     public void ciclo() throws InterruptedException {
-        
+               
         long ahora;
         long antes = System.nanoTime();
         
@@ -860,7 +881,32 @@ public class Ventana extends JFrame /*implements Runnable*/{
                         dibujar();
                         Thread.sleep(5);
                         if (vidas == 0){
-                            JOptionPane.showMessageDialog(this, sc.leerScore(2));
+                            menuScore = true;
+                            while (menuScore){
+                                if (dato == 6){
+                                    if (seleccionScore < 5){
+                                        seleccionScore++;
+                                    }
+                                    else{
+                                        if(seleccionScore == 5){
+                                            seleccionScore = 0;
+                                        }
+                                    }
+                                }
+                                else {
+                                    if (dato == 7){
+                                        if (seleccionScore > 0){
+                                            seleccionScore--;
+                                        }
+                                        else{
+                                            if(seleccionScore == 0){
+                                                seleccionScore = 5;
+                                            }
+                                        }
+                                    }
+                                }
+                                dibujar();
+                            }
                         }
                     }
                     

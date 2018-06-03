@@ -29,10 +29,9 @@ public class SaveScore {
     
     //Objetivo 1 - crear archivo de texto encargado de llevar el score
     public SaveScore(){
-        guardarScore();
     }
     
-    public void guardarScore(){
+    public void guardarScore(String score){
         try {
             archivo = new FileWriter("Scores.txt");
             pw = new PrintWriter(archivo);
