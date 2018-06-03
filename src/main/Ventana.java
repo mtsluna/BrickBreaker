@@ -77,9 +77,8 @@ public class Ventana extends JFrame /*implements Runnable*/{
     //Main
     public static void main(String[] args) throws InterruptedException{
         //Creacion de objeto ventana
-        Ventana ventana = new Ventana("Space War");
+        Ventana ventana = new Ventana("Brick Breaker");
         //Inicia el ciclo del juego
-//        ventana.iniciar();
         ventana.ciclo();
         
         
@@ -98,7 +97,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
     int yPaleta = 430;
     
     int contadorNivel = 1;
-    int nivel = 2;
+    int nivel = 1;
     int nivelesHechos = 1;
     
     int [] xBloques0 = {20,90,165,235,325,398,488,558,633,703};
@@ -129,6 +128,8 @@ public class Ventana extends JFrame /*implements Runnable*/{
     private int seleccionPaleta = 1;
     private boolean automatico = false;
     private int score = 0;
+    private int scoreAnterior = 0;
+    private boolean colorScore = false;
     private String scoreString = "000000000";
     private float sumatoria = 0;
     private int seleccionMenu = 0;
@@ -421,8 +422,14 @@ public class Ventana extends JFrame /*implements Runnable*/{
         if (nivel == 1){
             if (bloquesColision[0] > -1 && posiciones[bloquesColision[0]]){
                 
-                posiciones[bloquesColision[0]] = false;                
+                posiciones[bloquesColision[0]] = false;    
+                scoreAnterior = score;
                 score = SaveScore.contadorScore(score, bloquesColision[0]);
+                
+                if ((score-scoreAnterior)>35){
+                    colorScore = true;
+                }
+                
                 scoreString = SaveScore.completarScore(score);
                 contadorRestante--;
                 velocidad = Velocidad.variacion(velocidad);
@@ -480,7 +487,13 @@ public class Ventana extends JFrame /*implements Runnable*/{
                         if (posicionesContadorToques[bloquesColision[0]] >= 2){
                             
                             posiciones1[bloquesColision[0]] = false;
+                            scoreAnterior = score;
                             score = SaveScore.contadorScore(score, bloquesColision[0]);
+                            if ((score-scoreAnterior)>35){
+                                colorScore = true;
+                                System.out.println(colorScore);
+                            }
+                            
                             scoreString = SaveScore.completarScore(score);
                             contadorRestante--;
                             velocidad = Velocidad.variacion(velocidad);
@@ -498,6 +511,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
     List<BufferedImage> dibujos = imagenes.cargarImagenes();
     private boolean menuPrincipal = true;
     private boolean dibujarMenu = true;
+    private int contadorColor = 0;
     
     public void dibujar(){
         buffer = canvas.getBufferStrategy();
@@ -540,12 +554,29 @@ public class Ventana extends JFrame /*implements Runnable*/{
         
         g.drawString("N: "+contadorNivel+"| D: "+nivel, 20, 482);
         
+        int Aux = 0;
+        
         if (score < 999999999){
-            g.drawString("PUNTAJE: "+scoreString, 346, 482);
-        }
+            if (colorScore){
+                g.setColor(Color.yellow);
+                g.drawString("PUNTAJE: "+scoreString, 346, 482);
+                contadorColor++;
+                if (contadorColor == 120){
+                    colorScore = false;
+                    contadorColor = 0;
+                }
+            }
+            else{
+                g.setColor(Color.blue);
+                g.drawString("PUNTAJE: "+scoreString, 346, 482);
+            }            
+        }        
         else{
             g.drawString("PUNTAJE: "+"INCREIBLE", 346, 482);
         }
+        
+        
+        g.setColor(Color.black);
         
         g.drawString("VIDAS: ", 650, 482);
         if (vidas == 4 || vidas == 3){
@@ -679,11 +710,8 @@ public class Ventana extends JFrame /*implements Runnable*/{
             g.drawString("PERDISTE", ((limitesX[1]-limitesX[0])/2)-80, 100);
             
             g.setColor(Color.white);
-            int agregado = 40;            
-            for (int i = 0; i < 5; i++){
-                g.drawString(sc.leerScore(i), ((limitesX[1]-limitesX[0])/2)-80, 250+(agregado*i));
-            }
-            g.drawImage(dibujos.get(seleccionPelota), ((limitesX[1]-limitesX[0])/2)-80, 250+(agregado*seleccionScore), 20, 20, this);
+            
+                        
             g.setColor(Color.black);
         }
         
@@ -760,7 +788,6 @@ public class Ventana extends JFrame /*implements Runnable*/{
                 
                 g.drawImage(dibujos.get(15), 390, 160, 20, 20, this);
                 g.drawImage(dibujos.get(16), 390, 310, 20, 20, this);
-                g.drawImage(dibujos.get(seleccionPelota), 350, 200, 100, 100, this);
             }
             
         }
@@ -777,7 +804,8 @@ public class Ventana extends JFrame /*implements Runnable*/{
     private boolean menuScore = false;
     SaveScore sc = new SaveScore();
     private int seleccionScore = 0;
-        
+    private int mensajeDerrota = 0;    
+    
     //Ejecución
     public void ciclo() throws InterruptedException {
                
@@ -786,6 +814,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
         
         //Ciclo infinito que no puede ser detenido
         boolean ciclo = true;
+        
         
         while (menuPrincipal){
             int dato = teclado.movimiento();
@@ -852,14 +881,11 @@ public class Ventana extends JFrame /*implements Runnable*/{
                         antes = System.nanoTime();
 
                     }
-                    //Ciclo de ejecución del juego
                     while (ejecutar) {
-        //                System.out.println("Hola");
                         ahora = System.nanoTime();
-        //                tiempoTranscurrido += (ahora - antes)/tiempoObjetivo;
-        //                tiempo += (ahora - antes);
                         sumatoria = sumatoria + (ahora - antes);
                         antes = ahora;
+                        
                         if (sumatoria/100000000 > 1){
                             tt[2]++;
                         }
@@ -882,6 +908,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
                         Thread.sleep(5);
                         if (vidas == 0){
                             menuScore = true;
+                            
                             while (menuScore){
                                 if (dato == 6){
                                     if (seleccionScore < 5){
@@ -906,10 +933,18 @@ public class Ventana extends JFrame /*implements Runnable*/{
                                     }
                                 }
                                 dibujar();
+                                mensajeDerrota++;
+                                if (mensajeDerrota == 60){
+                                    JOptionPane.showMessageDialog(this, "GRACIAS POR JUGAR!!! TU SCORE FUE DE:\n"
+                                                                                 +scoreString+" PUNTOS"); 
+                                    //REINICIO POR PERDIDA
+                                    mensajeDerrota = 0; menuScore = false; ejecutar = false;
+                                    score = 0; scoreString = "000000000";
+                                    vidas = 3; nivelesHechos = 1;
+                                }
                             }
                         }
-                    }
-                    
+                    }                    
                 }
             }
         }
