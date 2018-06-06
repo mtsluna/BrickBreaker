@@ -348,7 +348,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
     }
     
     private int cpu = 0;
-    private float [] posiCpu = {0,0,0,0,0};
+    private double [] posiCpu = {0,0,0,0,0};
     
     public void actualizar(){
         
@@ -369,7 +369,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
             else{
                 if (cpu == 61){
                     System.out.println("Prueba de CPU completada");
-                    posiCpu[4] = ((posiCpu[1] - posiCpu [0])/(posiCpu[3]/1000 - posiCpu[2]/1000));
+                    posiCpu[4] = (((posiCpu[1]/300/0.393701) - (posiCpu[0]/300/0.393701))/(posiCpu[3]/1000000000 - posiCpu[2]/1000000000));
                     System.out.println("Velocidad: "+posiCpu[4]);
                     System.out.println((posiCpu[1]/300/0.393701)+"|"+posiCpu[0]/300/0.393701);
                     ejecutar = false;
