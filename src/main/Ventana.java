@@ -128,6 +128,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
     private float sumatoria = 0;
     private int seleccionMenu = 0;
     private boolean skins = true;
+    private boolean pausa = false;
     
     public void actualizarPaletaPausa(int dato){
         //System.out.println(vidas);
@@ -341,12 +342,44 @@ public class Ventana extends JFrame /*implements Runnable*/{
             vecesVidas[j] = true;
         }
         
-        piso = true;
+        piso = false;
         paletaMov = true;   
         ejecutar = false;
     }
     
+    private int cpu = 0;
+    private float [] posiCpu = {0,0,0,0,0};
+    
     public void actualizar(){
+        
+        if (cpu <= 60){
+            if (cpu == 1){
+                posiCpu[0] = xPelota;
+                posiCpu[2] = System.currentTimeMillis();
+            }
+            cpu++;
+        }
+        else{
+            if (cpu == 60){
+                posiCpu[1] = xPelota;
+                posiCpu[3] = System.currentTimeMillis();
+                
+                cpu++;
+            }
+            else{
+                if (cpu == 61){
+                    System.out.println("Prueba de CPU completada");
+                    posiCpu[4] = ((posiCpu[1] - posiCpu [0])/(posiCpu[3]/1000 - posiCpu[2]/1000));
+                    System.out.println("Velocidad: "+posiCpu[4]);
+                    System.out.println((posiCpu[1]/300/0.393701)+"|"+posiCpu[0]/300/0.393701);
+                    ejecutar = false;
+                }
+            }
+        }
+        
+        
+        
+        
         if (i == 0){
             //System.out.println(colisionAnterior);
             colisionAnterior = -1;
@@ -872,7 +905,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
                     dato = teclado.movimiento();
                     actualizarPaletaPausa(dato);
                     dibujar();
-                    Thread.sleep(1);
+                    Thread.sleep(10);
                     if (dato == 3 && vidas > 0){
                         ejecutar = true;
                         antes = System.nanoTime();
@@ -898,10 +931,14 @@ public class Ventana extends JFrame /*implements Runnable*/{
                         if (contadorRestante == 0){
                             reiniciar();
                             contadorNivel++;
+                            for (int i = 0; i < 4; i++){
+                                vecesVidas[i] = true;
+                            }
                         }
-                        actualizar();
+                        actualizar();  
+                        
                         dibujar();
-                        Thread.sleep(1);
+                        Thread.sleep(7);
                         if (vidas == 0){
                             menuScore = true;
                             
@@ -933,10 +970,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
                                 if (mensajeDerrota == 60){
                                     JOptionPane.showMessageDialog(this, "GRACIAS POR JUGAR!!! TU SCORE FUE DE:\n"
                                                                                  +scoreString+" PUNTOS"); 
-                                    //REINICIO POR PERDIDA
-                                    mensajeDerrota = 0; menuScore = false; ejecutar = false;
-                                    score = 0; scoreString = "000000000";
-                                    vidas = 3; nivelesHechos = 1;
+                                    System.exit(0);
                                 }
                             }
                         }
