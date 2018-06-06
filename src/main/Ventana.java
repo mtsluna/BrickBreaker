@@ -8,21 +8,15 @@ import Interacciones.Colisiones;
 import Interacciones.Imagenes;
 import Interacciones.Teclado;
 import Adicionales.SaveScore;
-import Adicionales.Timer;
 import Adicionales.Velocidad;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.scene.shape.SVGPath;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -121,7 +115,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
     private boolean piso = true;
     private boolean paletaMov = true;
     private int lado;
-    private int vidas = 1;
+    private int vidas = 4;
     private boolean [] vecesVidas = {true,true,true,true};
     //MENU
     private int seleccionPelota = 0;
@@ -323,6 +317,8 @@ public class Ventana extends JFrame /*implements Runnable*/{
     private int i = 0;
     private int colisionAnterior;
     private int contadorRestante = 30;
+    
+    private boolean reinicioNivel = false;
     
     public void reiniciar(){
         i = 0;
@@ -784,6 +780,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
                 g.setColor(Color.cyan); g.fillRect(338, 188, 100, 100);
                 g.setColor(Color.yellow); g.fillRect(342, 192, 100, 100);
                 g.setColor(Color.magenta); g.fillRect(346, 196, 100, 100);
+                g.drawImage(dibujos.get(seleccionPelota), 350, 200, 100, 100, this);
                 g.setColor(Color.white);
                 
                 g.drawImage(dibujos.get(15), 390, 160, 20, 20, this);
@@ -875,7 +872,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
                     dato = teclado.movimiento();
                     actualizarPaletaPausa(dato);
                     dibujar();
-                    Thread.sleep(5);
+                    Thread.sleep(1);
                     if (dato == 3 && vidas > 0){
                         ejecutar = true;
                         antes = System.nanoTime();
@@ -902,10 +899,9 @@ public class Ventana extends JFrame /*implements Runnable*/{
                             reiniciar();
                             contadorNivel++;
                         }
-
                         actualizar();
                         dibujar();
-                        Thread.sleep(5);
+                        Thread.sleep(1);
                         if (vidas == 0){
                             menuScore = true;
                             
