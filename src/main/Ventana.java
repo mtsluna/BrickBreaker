@@ -317,9 +317,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
     
     private int i = 0;
     private int colisionAnterior;
-    private int contadorRestante = 30;
-    
-    private boolean reinicioNivel = false;
+    private int contadorRestante = 30;    
     
     public void reiniciar(){
         i = 0;
@@ -330,7 +328,8 @@ public class Ventana extends JFrame /*implements Runnable*/{
         direccion = true; movX = true; movY = true;
         xPelota = 387; yPelota = 410; xPaleta = 346; yPaleta = 430;
 
-        nivelesHechos++;
+        nivel = (int)(Math.random()*2)+1;
+        nivelesHechos++;        
         
         for (int j = 0; j < posiciones.length; j++){
             posiciones[j] = true;
@@ -347,39 +346,8 @@ public class Ventana extends JFrame /*implements Runnable*/{
         ejecutar = false;
     }
     
-    private int cpu = 0;
-    private double [] posiCpu = {0,0,0,0,0};
     
-    public void actualizar(){
-        
-        if (cpu <= 60){
-            if (cpu == 1){
-                posiCpu[0] = xPelota;
-                posiCpu[2] = System.currentTimeMillis();
-            }
-            cpu++;
-        }
-        else{
-            if (cpu == 60){
-                posiCpu[1] = xPelota;
-                posiCpu[3] = System.currentTimeMillis();
-                
-                cpu++;
-            }
-            else{
-                if (cpu == 61){
-                    System.out.println("Prueba de CPU completada");
-                    posiCpu[4] = (((posiCpu[1]/300/0.393701) - (posiCpu[0]/300/0.393701))/(posiCpu[3]/1000000000 - posiCpu[2]/1000000000));
-                    System.out.println("Velocidad: "+posiCpu[4]);
-                    System.out.println((posiCpu[1]/300/0.393701)+"|"+posiCpu[0]/300/0.393701);
-                    ejecutar = false;
-                }
-            }
-        }
-        
-        
-        
-        
+    public void actualizar(){                 
         if (i == 0){
             //System.out.println(colisionAnterior);
             colisionAnterior = -1;
@@ -563,6 +531,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
         //Caja de datos relleno
         g.setColor(Color.lightGray);
         g.fillRect(15, 465, 763, 25);
+        g.drawImage(dibujos.get(10), limitesX[0], limitesY[0], 764, 441, this);
         //Caja de datos contorno
         g.setColor(Color.black);
         g.drawRect(15, 465, 763, 25);
@@ -726,7 +695,8 @@ public class Ventana extends JFrame /*implements Runnable*/{
         if (menuScore){
             g.setColor(Color.black);
             g.fillRect(limitesX[0], limitesY[0], 764, 475);
-            g.setFont(new Font("Impact", Font.BOLD, 46));
+            
+            g.setFont(new Font("Impact", Font.BOLD, fuente));
             
             g.setColor(Color.yellow);
             g.drawString("PERDISTE", ((limitesX[1]-limitesX[0])/2)-68, 88);
@@ -767,12 +737,13 @@ public class Ventana extends JFrame /*implements Runnable*/{
         if (dibujarMenu){
             g.setColor(Color.black);
             g.fillRect(limitesX[0], limitesY[0], 764, 475);
+            g.drawImage(dibujos.get(10), limitesX[0], limitesY[0], 764, 475, this);
             g.setColor(Color.white);
             g.drawString("[<-] Mover a la izquierda || [ENTER] Seleccionar || Mover a la derecha [->]", 200, 485);
             
             //Titulo
             g.setColor(Color.yellow);
-            g.setFont(new Font("Impact", Font.BOLD, 46));
+            g.setFont(new Font("Impact", Font.BOLD, fuente));
             g.drawString("BRICK BREAKER", ((limitesX[1]-limitesX[0])/2)-138, 96);
             g.fillRect(((limitesX[1]-limitesX[0])/2)-138, 31, 320, 10);
             g.fillRect(((limitesX[1]-limitesX[0])/2)-138, 116, 320, 10);
@@ -819,7 +790,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
                 g.drawImage(dibujos.get(15), 390, 160, 20, 20, this);
                 g.drawImage(dibujos.get(16), 390, 310, 20, 20, this);
             }
-            
+                        
         }
         
         
@@ -835,18 +806,57 @@ public class Ventana extends JFrame /*implements Runnable*/{
     SaveScore sc = new SaveScore();
     private int seleccionScore = 0;
     private int mensajeDerrota = 0;    
+    private int threadVelocidad = 9;
+    private int fuente = 36;
+        
+    private int SO(){
+        try{
+            String so = System.getProperty("os.name");
+            System.out.println(so);
+
+            if (so.toLowerCase().trim().startsWith("windows") || so.toLowerCase().trim().startsWith("win")){
+                return 1;
+            }
+            else{
+                if (so.toLowerCase().trim().startsWith("linux") || so.toLowerCase().trim().startsWith("lin")){
+                    return 2;
+                }
+                else{
+                    return 2;
+                }
+            }
+        }
+        catch(Exception e){
+            return 2;
+        }
+    }
     
     //Ejecución
     public void ciclo() throws InterruptedException {
                
         long ahora;
         long antes = System.nanoTime();
+        int verificarSO = 0;
         
         //Ciclo infinito que no puede ser detenido
         boolean ciclo = true;
         
-        
         while (menuPrincipal){
+            if (verificarSO == 0){
+                if (SO() == 1){
+                    fuente = 46;
+                }
+                else{
+                    if (SO() == 2){
+                        fuente = 36;
+                    }
+                    else{
+                        fuente = 36;
+                    }
+                }
+                verificarSO++;
+            }
+            
             int dato = teclado.movimiento();
             dibujar();
             if (dato == 1){
@@ -896,8 +906,46 @@ public class Ventana extends JFrame /*implements Runnable*/{
             else {
                 if (seleccionMenu != 1){
                     skins = true;
+                }                
+            }
+            
+            if (seleccionMenu == 2 && dato == 5){
+                try{
+                String [] seleccion2 = {"Mirar la información","Ajustar el rendimiento"};        
+                String info = (String) JOptionPane.showInputDialog(null, "Que deseas realizar...?",
+                "INFO", JOptionPane.QUESTION_MESSAGE, null, seleccion2, seleccion2[0]);
+                switch(info){
+                    case "Mirar la información":
+                        break;
+                    case "Ajustar el rendimiento":
+                        String [] cpu = {"Muy alto","Alto","Medio","Bajo","Muy bajo"};
+                        String procesamiento = (String) JOptionPane.showInputDialog(null, "Selecciona el nivel de procesamiento de tu PC...",
+                        "AJUSTAR EL RENDIMIENTO", JOptionPane.QUESTION_MESSAGE, null, cpu, cpu[2]);
+                        switch (procesamiento){
+                            case "Muy alto":
+                                threadVelocidad = 10;
+                                break;
+                            case "Alto":
+                                threadVelocidad = 9;
+                                break;                             
+                            case "Medio":
+                                threadVelocidad = 8;
+                                break;
+                            case "Bajo":
+                                threadVelocidad = 5;
+                                break;
+                            case "Muy bajo":
+                                threadVelocidad = 2;
+                                break;
+                        }
+                        break;
+                    default:                        
+                }
+                }catch (NullPointerException e){
+                    
                 }
             }
+            
             if (dato == 5 && seleccionMenu == 0){
                 skins = true;
                 dibujarMenu = false;
@@ -905,7 +953,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
                     dato = teclado.movimiento();
                     actualizarPaletaPausa(dato);
                     dibujar();
-                    Thread.sleep(10);
+                    Thread.sleep(threadVelocidad);
                     if (dato == 3 && vidas > 0){
                         ejecutar = true;
                         antes = System.nanoTime();
@@ -938,7 +986,7 @@ public class Ventana extends JFrame /*implements Runnable*/{
                         actualizar();  
                         
                         dibujar();
-                        Thread.sleep(7);
+                        Thread.sleep(threadVelocidad);
                         if (vidas == 0){
                             menuScore = true;
                             
