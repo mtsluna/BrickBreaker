@@ -308,29 +308,44 @@ public class Ventana extends JFrame{
         dato = -1;
     }
     
-    //moverPaletaComputadora <- EN PROCESO
+    //moverPaletaComputadora <- TERMINADO Y LIMPIADO
     public void moverPaletaComputadora(){
+        //dato es igual a la devolucion del metodo movimiento 
         dato = teclado.movimiento();
+        //La paleta se centra en la pelota
         xPaleta = xPelota - 45;
+        //Si la paleta es mayor que el limite[1]
         if (xPaleta >= limitesX[1] - 100){
+            //Se detiene en el limite
             xPaleta = limitesX[1] - 100;
         }
+        //Sino
         else{
+            //Si la paleta es menor al limite[0]
             if (xPaleta <= limitesX[0]+15){
+                //Si la paleta - 15 es menor que 45
                 if ((xPaleta-15) < 45){
+                    //La paleta se detiene en el limite[0]
                     xPaleta = xPaleta - (xPaleta-15);
                 }   
             }
         }
+        //Si se presiona espacio
         if (dato == 3){
+            //Se detiene el juego
             ejecutar = false;
+            //Se detiene el movimiento de la paleta, pasa a ser inmovible
             paletaMov = false;
         }
+        //Sino
         else {
+            //Si se presiona la letra A o a 
             if (dato == 4){
+                //El automatico se desactiva
                 automatico = false;
             }
         }
+        //La variable dato se mantiene con un valor no usado
         dato = -1;
     }
     public void moverPaleta(){
