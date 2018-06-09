@@ -848,21 +848,21 @@ public class Ventana extends JFrame{
         
         if (verificarSO == 0){
             if (SO() == 1){
-                fuente = 46;
+                fuente = 36;
             }
             else{
                 if (SO() == 2){
-                    fuente = 36;
+                    fuente = 46;
                 }
                 else{
-                    fuente = 36;
+                    fuente = 46;
                 }
             }
             verificarSO++;
         }
         
         while (menuPrincipal){            
-            
+            Thread.sleep(threadVelocidad);
             int dato = teclado.movimiento();
             dibujar();
             if (dato == 1){
@@ -922,6 +922,26 @@ public class Ventana extends JFrame{
                 "INFO", JOptionPane.QUESTION_MESSAGE, null, seleccion2, seleccion2[0]);
                 switch(info){
                     case "Mirar la información":
+                        JOptionPane.showMessageDialog(null, "Información: \n"
+                                                          + "Bienvenido a Brick Breaker!!!\n\n"
+                                                          + "No hay reglas, solo trate de que la bola\n"
+                                                          + "no caiga en el fondo del ring de juego.\n\n"
+                                                          + "=== Niveles ===\n"
+                                                          + "Basicamente son infinitos, disfruta!!!\n\n"
+                                                          + "=== Dificultades ===\n"
+                                                          + "D1: Bloques se rompen con un solo toque\n"
+                                                          + "D2: Bloques se rompen con dos toques\n"
+                                                          + "EXTRA: En todos los niveles la pelota se acelera\n"
+                                                          + "al romper ciertos bloques así que ten cuidado!!!\n\n"
+                                                          + "=== Puntos por bloque ===\n"
+                                                          + "Verde: 10pts (normal) o 70pts (bonus de la suerte)\n"
+                                                          + "Rosa: 20pts (normal) o 140pts (bonus de la suerte)\n"
+                                                          + "Amarillo: 30pts (normal) o 210pts (bonus de la suerte)\n\n"
+                                                          + "=== Controles ===\n"
+                                                          + "[<-] Izquierda || [ENTER] Seleccionar || Derecha[->]\n"
+                                                          + "[A] Modo Automatico [ESPACIO] PAUSA E INICIAR\n"
+                                                          + "[/\\] Arriba || [\\/] Abajo\n"
+                                + "");
                         break;
                     case "Ajustar el rendimiento":
                         String [] cpu = {"Muy alto","Alto","Medio","Bajo","Muy bajo"};
@@ -994,9 +1014,9 @@ public class Ventana extends JFrame{
                         dibujar();
                         Thread.sleep(threadVelocidad);
                         if (vidas == 0){
-                            menuScore = true;
-                            
+                            menuScore = true;                            
                             while (menuScore){
+                                Thread.sleep(threadVelocidad);
                                 dibujar();
                                 mensajeDerrota++;
                                 if (mensajeDerrota == 60){
