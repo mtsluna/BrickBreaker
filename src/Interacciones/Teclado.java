@@ -13,7 +13,7 @@ import java.awt.event.KeyListener;
  */
 public class Teclado implements KeyListener{
     
-    public static boolean derecha,izquierda,pausa,a,enter,arriba,abajo;
+    public static boolean derecha,izquierda,pausa,a,enter,arriba,abajo,desarrollador;
     public Teclado(){
         derecha = false;
         izquierda = false;

@@ -32,22 +32,18 @@ public class Colisiones {
     }
     public static int lado(int [] xObjP,int [] yObjP,int [] xObj,int [] yObj){
         if ((xObjP[0] >= xObj[0] && xObjP[0] <= xObj[1]) && (yObjP[0] >= yObj[0] && yObjP[0] <= yObj[2])){
-            System.out.println("Colision");
             return 1;
         }
         //colision lado superior derecho
         if ((xObjP[1] >= xObj[0] && xObjP[1] <= xObj[1]) && (yObjP[1] >= yObj[0] && yObjP[1] <= yObj[2])){
-            System.out.println("Colision");
             return 2;
         }
         //Colision lado inferior izquierdo
         if ((xObjP[2] >= xObj[0] && xObjP[2] <= xObj[1]) && (yObjP[2] >= yObj[0] && yObjP[2] <= yObj[2])){
-            System.out.println("Colision");
             return 3;
         }
         //Colision lado inferior derecho
         if ((xObjP[3] >= xObj[0] && xObjP[3] <= xObj[1]) && (yObjP[3] >= yObj[0] && yObjP[3] <= yObj[2])){
-            System.out.println("Colision");
             return 4;
         }
         return 5; 
@@ -102,7 +98,6 @@ public class Colisiones {
                     l = lado(puntosPelotaX, puntosPelotasY, puntosBloqueX, puntosBloqueY);
                     devolucion[0] = c;
                     devolucion[1] = l;
-                    //System.out.println("BLOQUE: "+devolucion[0]);
                     return devolucion;
                 }
                 else{
@@ -112,7 +107,6 @@ public class Colisiones {
                 }                
             }   
         }
-//        System.out.println(devolucion[0]+"|"+devolucion[1]);
         return devolucion;
     }
     

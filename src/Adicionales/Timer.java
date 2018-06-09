@@ -21,8 +21,7 @@ public class Timer {
     String sumatoriaNumerica;
     
     public static String Contador(float sumatoria){
-        int ms,s = 0,m = 0;
-        String sumatoriaString = ""+sumatoria;
+        int m = 0;
         String segundos = "",minutos = "";
         
         segundos = ""+(int)sumatoria;

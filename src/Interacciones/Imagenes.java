@@ -66,7 +66,7 @@ public class Imagenes {
             
             //FONDO
             //10
-            img = ImageIO.read(new File("fondo_0.jpg"));
+            img = ImageIO.read(new File("fondo_0.png"));
             imagenes.add(img);
             //11
             img = ImageIO.read(new File("fondo_1.png"));

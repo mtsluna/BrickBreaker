@@ -13,7 +13,6 @@ public class Velocidad {
     
     public static int variacion(int velocidad){
         int aleatorioVelocidad = (int)(Math.random()*((5-1)+1))+1;
-        System.out.println("Aleatorio: "+aleatorioVelocidad);
         if (aleatorioVelocidad == 2){
             if (velocidad < 2){
                 velocidad++;
@@ -26,9 +25,10 @@ public class Velocidad {
                 }
             }
         }
-        else
-            System.out.println(velocidad);
+        else{
             return velocidad;
+        }
+        return velocidad;
         }
                 
     }

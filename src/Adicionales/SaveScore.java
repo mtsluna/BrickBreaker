@@ -15,10 +15,8 @@ public class SaveScore {
     public static int contadorScore(int score, int b){
         int aleatorioAdicional = (int)(Math.random()*8)+1;
         boolean bonus = false;
-        System.out.println("NUMERO DE LA SUERTE"+aleatorioAdicional);
         if  (aleatorioAdicional == 7){
             bonus = true;
-            System.out.println(bonus);
         }
         
         if (b == 0 || b == 3 || b == 6 || b == 9 || b == 12 || b == 15 || b == 18 || b == 21 || b == 24 || b == 27){

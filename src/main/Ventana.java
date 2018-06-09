@@ -124,6 +124,7 @@ public class Ventana extends JFrame{
     
     //Teclado
     private int dato;
+    private boolean desarrollador = false;
     
     //Imagenes
     public Imagenes imagenes = new Imagenes();
@@ -171,94 +172,143 @@ public class Ventana extends JFrame{
         //Inicia el ciclo del juego
         ventana.ciclo(); 
     }
+    
+    //actualizarPaletaPausa <- TERMINADO Y LIMPIADO
     public void actualizarPaletaPausa(int dato){
-        //System.out.println(vidas);
+        //Si piso es true
         if (piso){
+            //Si vida == 4 (Comienzo de partida)
             if (vidas == 4){
+                //La pelota adquirira posición del centro de la paleta
                 xPelota = 45 + xPaleta;
+                //Y su respectiva altura
                 yPelota = 410;
+                //Si se pulsa espacio
                 if (dato == 3){
+                    //Se pierde la vida de contención y se empieza el juego
                     vidas--;
                 }
             }
         }
+        //Si piso NO es true
         else {
+            //Si el primer saque de la vida 4 esta habilitado
             if (vecesVidas[3] && vidas == 4) {
-                //System.out.println("SINO");
+                //Pelota toma posicion central de paleta
                 xPelota = 45 + xPaleta;
+                //Y altura predeterminada
                 yPelota = 410;
+                //Si se pulsa espacio
                 if (dato == 3){
+                    //Se invalida la posibilidad de sacar desde la paleta otra vez en la pausa
                     vecesVidas[3] = false;
                 }
             }
+            //Sino
             else {
+                //Si el primer saque de la vida 3 se encuentra habilitado
                 if (vecesVidas[2] && vidas == 3){
-                    //System.out.println("SINO");
+                    //Pelota toma posicion central de paleta
                     xPelota = 45 + xPaleta;
+                    //Y altura predeterminada
                     yPelota = 410;
+                    //Si se pulsa espacio
                     if (dato == 3){
+                        //Se invalida la posibilidad de sacar desde la paleta otra vez en la pausa
                         vecesVidas[2] =  false;
                     }
                 }
+                //Sino
                 else {
+                    //Si el primer saque de la vida 2 se encuentra habilitado
                     if (vecesVidas[1] && vidas == 2){
-                        //System.out.println("SINO");
+                        //Pelota toma posicion central de paleta
                         xPelota = 45 + xPaleta;
+                        //Y altura predeterminada
                         yPelota = 410;
+                        //SI se pulsa espacio
                         if (dato == 3){
+                            //Se invalida la posibilidad de sacar desde la paleta otra vez en la pausa
                             vecesVidas[1] = false;
                         }
                     }
+                    //Sino
                     else {
+                        //Si el primer saque de la vida 1 se encuentra habilitado
                         if (vecesVidas[0] && vidas == 1){
-                            //System.out.println("SINO");
+                            //Pelota toma posicion central de paleta
                             xPelota = 45 + xPaleta;
+                            //Y altura predeterminada
                             yPelota = 410;
+                            //SI se pulsa espacio
                             if (dato == 3){
+                                //Se invalida la posibilidad de sacar desde la paleta otra vez en la pausa
                                 vecesVidas[0] = false;
                             }
                         }
                     }
+                    //Si vidas es igual a 0 -> PERDISTE
                     if (vidas == 0){
+                        //Pelota vuelve sobre su lugar en X
                         xPelota = 45 + xPaleta;
+                        //E Y junto a la paleta
                         yPelota = 410;
                     }
                 }
             }
         }
+        //Si se pulsa la flecha derecha y el movimiento de la paleta esta activo
         if (dato == 1 && paletaMov){
+            //Si la paleta se encuentra en su maximo limite del eje X
             if (xPaleta >= limitesX[1] - 100 || xPaleta >= limitesX[1] - 110){
+                //La paleta ya no puede avanzar
                 if (xPaleta != limitesX[1] - 100){
+                    //Asignando como maximo el limite[1] - 100 menos la posicion actual
                     xPaleta = xPaleta + ((limitesX[1]-100) - xPaleta);
                 }
             }
+            //Si la paleta no esta en el limite c/vez que se pulsa o se mantiene apretado
             else{
+                //Se le suma +12 a la posicion en X de la paleta
                 xPaleta = xPaleta + 12;
-                //System.out.println(xPaleta);
             }            
         }
+        //Sino
         else {
+            //Si se pulsa la flecha izquierda y el movimiento de la paleta se encuentra activado
             if (dato == 2 && paletaMov){
+                //Si la X de paleta es inferior o igual al limite[0]
                 if (xPaleta <= limitesX[0]+15){
+                    //Si la X de paleta no es igual a limite[0]
                     if (xPaleta != limitesX[0]){
+                        //xPaleta es igual a xPaleta menos la posicion actual menos el limite
                         xPaleta = xPaleta - (xPaleta - limitesX[0]);
                     }
                 }
+                //Si la X de paleta es mayor a limite[0]
                 else{
+                    //Se suma +12 por cada vez que se pulsa la flecha izquierda
                     xPaleta = xPaleta - 12;
-                    //System.out.println(xPaleta);
                 }
             }
+            //Sino
             else{
+                //Si se pulsa espacio
                 if (dato == 3){
+                    //Se pausa el juego
                     ejecutar = false;
                 }
+                //Sino no hace nada
                 else{
+                    
                 }
             }
         }
+        //La variable dato mantiene constantemente un valor no ocupado
         dato = -1;
     }
+    
+    //moverPaletaComputadora <- EN PROCESO
     public void moverPaletaComputadora(){
         dato = teclado.movimiento();
         xPaleta = xPelota - 45;
@@ -373,7 +423,6 @@ public class Ventana extends JFrame{
     }
     public void actualizar(){                 
         if (i == 0){
-            //System.out.println(colisionAnterior);
             colisionAnterior = -1;
             i++;
         }
@@ -457,7 +506,6 @@ public class Ventana extends JFrame{
                 
                 if (lado == 1 || lado == 2){
                     movY = true;
-                    //System.out.println(colisionLateral[0]);
                     if (colisionLateral[0]){
                         movX = false;
                     }
@@ -483,7 +531,6 @@ public class Ventana extends JFrame{
                 if (bloquesColision[0] > -1 && posiciones1[bloquesColision[0]]){
                     if (lado == 1 || lado == 2){
                         movY = true;
-                        //System.out.println(colisionLateral[0]);
                         if (colisionLateral[0]){
                             movX = false;
                         }
@@ -504,7 +551,6 @@ public class Ventana extends JFrame{
                     }
                     if (colisionAnterior != bloquesColision[0]){
                         posicionesContadorToques[bloquesColision[0]]++;
-                        //System.out.println(posicionesContadorToques[bloquesColision[0]]);
                         if (posicionesContadorToques[bloquesColision[0]] >= 2){
                             
                             posiciones1[bloquesColision[0]] = false;
@@ -512,7 +558,6 @@ public class Ventana extends JFrame{
                             score = SaveScore.contadorScore(score, bloquesColision[0]);
                             if ((score-scoreAnterior)>35){
                                 colorScore = true;
-                                System.out.println(colorScore);
                             }
                             
                             scoreString = SaveScore.completarScore(score);
@@ -526,7 +571,6 @@ public class Ventana extends JFrame{
         }
     }
     public void dibujar(){
-        System.out.println(fuente);
         buffer = canvas.getBufferStrategy();
         if (buffer == null){
             canvas.createBufferStrategy(3);
@@ -538,20 +582,18 @@ public class Ventana extends JFrame{
         
         g.clearRect(0, 0, WIDTH, HEIGHT);
                         
-        //Relleno area de juego
-//        g.setColor(Color.black);
-//        g.fillRect(15, 15, 763, 441);
+        g.drawImage(dibujos.get(11), 0, 0, WIDTH, HEIGHT, this);
         //Contorneado
-        g.setColor(Color.black);
+        g.setColor(Color.white);
         g.drawRect(15, 15, 763, 441);
         //Caja de datos relleno
         g.setColor(Color.lightGray);
         g.fillRect(15, 465, 763, 25);
         g.drawImage(dibujos.get(10), limitesX[0], limitesY[0], 764, 441, this);
         //Caja de datos contorno
-        g.setColor(Color.black);
+        g.setColor(Color.white);
         g.drawRect(15, 465, 763, 25);
-        
+        g.setColor(Color.black);
         
         
         switch (seleccionPelota){
@@ -567,9 +609,7 @@ public class Ventana extends JFrame{
         }
         
         g.drawString("N: "+contadorNivel+"| D: "+nivel, 20, 482);
-        
-        int Aux = 0;
-        
+                
         if (score < 999999999){
             if (colorScore){
                 g.setColor(Color.yellow);
@@ -613,18 +653,20 @@ public class Ventana extends JFrame{
             g.drawString("PERDISTE", 696, 482);
         }
         
+        //PARA COMPROBAR POSICIONES DE PELOTA
+//        g.drawString("x:"+xPelota+"|y:"+yPelota, xPelota, yPelota);
+//        g.drawString("PELOTA|x:"+xPelota+"y:"+yPelota,10,25);
         
-        //g.drawOval(xPelota, yPelota, tamañoPelota, tamañoPelota);
-        g.drawString("x:"+xPelota+"|y:"+yPelota, xPelota, yPelota);
-        g.drawString("PELOTA|x:"+xPelota+"y:"+yPelota,10,25);
-        //g.drawImage(dibujos.get(4), 50, 50, 10, 10, this);
-        
+        if (!dibujarMenu){
         //Ring de JUEGO
+        g.setColor(Color.white);
         g.drawLine(limitesX[0], limitesY[0], limitesX[0], limitesY[1]);
         g.drawLine(limitesX[0], limitesY[0], limitesX[1], limitesY[0]);
         g.drawLine(limitesX[1], limitesY[0], limitesX[1], limitesY[1]);
         g.drawLine(limitesX[0], limitesY[1], limitesX[1], limitesY[1]);        
-                
+        } 
+        
+        g.setColor(Color.black);
         int contadorInterno = 0;
         int contadorInterno1 = 0;
         if (nivel == 1){
@@ -656,7 +698,6 @@ public class Ventana extends JFrame{
             if (nivel == 2){
                 for (int i = 0; i < 10; i++){
                     for (int j = 0; j < 3; j++){
-                        g.drawString("Bloque: "+contadorInterno1, xBloques0[i], yBloques0[j]);
                         if (posiciones1[contadorInterno1] == false) {
 
                         }
@@ -706,29 +747,7 @@ public class Ventana extends JFrame{
             if (seleccionPaleta == 1){
                 g.drawImage(dibujos.get(9),xPaleta,yPaleta,100,10,this);
             }
-        }
-        
-        if (menuScore){
-            g.setColor(Color.black);
-            g.fillRect(limitesX[0], limitesY[0], 764, 475);
-            
-            g.setFont(new Font("Impact", Font.BOLD, fuente));
-            
-            g.setColor(Color.yellow);
-            g.drawString("PERDISTE", ((limitesX[1]-limitesX[0])/2)-68, 88);
-            g.setColor(Color.cyan);
-            g.drawString("PERDISTE", ((limitesX[1]-limitesX[0])/2)-72, 92);
-            g.setColor(Color.magenta);
-            g.drawString("PERDISTE", ((limitesX[1]-limitesX[0])/2)-76, 96);
-            
-            g.setColor(Color.white);            
-            g.drawString("PERDISTE", ((limitesX[1]-limitesX[0])/2)-80, 100);
-            
-            g.setColor(Color.white);
-            
-                        
-            g.setColor(Color.black);
-        }
+        }               
         
         if (ejecutar){
             String minutos = "", segundos = "";
@@ -750,10 +769,33 @@ public class Ventana extends JFrame{
             g.drawString("| TIEMPO: PAUSADO", 100, 482);
         }
         
+        if (menuScore){
+            g.setColor(Color.black);
+            g.fillRect(limitesX[0], limitesY[0], 764, 475);
+            g.drawImage(dibujos.get(11), 0, 0, WIDTH, HEIGHT, this);
+            
+            g.setFont(new Font("Impact", Font.BOLD, fuente));
+            
+            g.setColor(Color.yellow);
+            g.drawString("PERDISTE", ((limitesX[1]-limitesX[0])/2)-68, 88);
+            g.setColor(Color.cyan);
+            g.drawString("PERDISTE", ((limitesX[1]-limitesX[0])/2)-72, 92);
+            g.setColor(Color.magenta);
+            g.drawString("PERDISTE", ((limitesX[1]-limitesX[0])/2)-76, 96);
+            
+            g.setColor(Color.white);            
+            g.drawString("PERDISTE", ((limitesX[1]-limitesX[0])/2)-80, 100);
+            
+            g.setColor(Color.white);
+            
+                        
+            g.setColor(Color.black);
+        }
+        
         if (dibujarMenu){
             g.setColor(Color.black);
             g.fillRect(limitesX[0], limitesY[0], 764, 475);
-            g.drawImage(dibujos.get(10), limitesX[0], limitesY[0], 764, 475, this);
+            g.drawImage(dibujos.get(11), limitesX[0], limitesY[0], 764, 475, this);
             g.setColor(Color.white);
             g.drawString("[<-] Mover a la izquierda || [ENTER] Seleccionar || Mover a la derecha [->]", 200, 485);
             
@@ -819,7 +861,6 @@ public class Ventana extends JFrame{
     private int SO(){
         try{
             String so = System.getProperty("os.name");
-            System.out.println(so);
 
             if (so.toLowerCase().trim().startsWith("windows") || so.toLowerCase().trim().startsWith("win")){
                 return 1;
@@ -883,7 +924,6 @@ public class Ventana extends JFrame{
                     }
                 }
             }
-            System.out.println(seleccionPelota);
             if (dato == 6){
                 if (seleccionPelota == 4){
                     seleccionPelota = 0;
@@ -1009,6 +1049,7 @@ public class Ventana extends JFrame{
                                 vecesVidas[i] = true;
                             }
                         }
+                        
                         actualizar();  
                         
                         dibujar();
