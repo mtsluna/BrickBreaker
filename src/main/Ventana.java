@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package main;
+
+//Clases importadas
 import Interacciones.Colisiones;
 import Interacciones.Imagenes;
 import Interacciones.Teclado;
@@ -24,24 +26,117 @@ import javax.swing.JOptionPane;
  *
  * @author MtsSk
  */
-public class Ventana extends JFrame /*implements Runnable*/{
+public class Ventana extends JFrame{
     
     //Escala de pantalla
     public static final int WIDTH = 800;
     public static final int HEIGHT = 530;
+    
     //Lienzo
     private Canvas canvas;
     private BufferStrategy buffer;
-    private BufferStrategy buffer1;
     private Graphics g;
-    //Control de datos en subhilo
-    private Thread hilo;
+    
     //Control de inicio de juego en FALSO
     private boolean ejecutar = false;    
-    //Objeto teclado
-    private Teclado teclado;
     
-    //Constructor de clase
+    //Objeto teclado
+    private Teclado teclado; 
+    
+    //PELOTA variables de control
+    int xPelota = 387;
+    int yPelota = 410;
+    private int tamañoPelota = 10;
+    boolean movX = true;
+    boolean movY = true;
+    boolean direccion = true;
+    private boolean piso = true;
+    private int velocidad = 1;
+    
+    //PALETA variables de control
+    int xPaleta = 346;
+    int yPaleta = 430;
+    private boolean paletaMov = true;
+    
+    //Posicion BLOQUES
+    int [] xBloques0 = {20,90,165,235,325,398,488,558,633,703};
+    int [] yBloques0 = {30,55,80};    
+    int [] xBloques1 = {20,90,165,235,325,398,488,558,633,703};
+    int [] yBloques2 = {30,55,80};
+    
+    //Area de juego
+    public final int limitesX [] = {15,778};
+    public final int limitesY [] = {15,456};
+    
+    //Aleatorios y control de ciclos
+    int random;   
+    int contador = 0;
+      
+    //Niveles   
+    int contadorNivel = 1;
+    int nivel = 1;
+    int nivelesHechos = 1;
+    
+    //Vidas
+    private int vidas = 4;
+    private boolean [] vecesVidas = {true,true,true,true};
+    
+    //Colisiones
+    private int [] puntosPelotaX;
+    private int [] puntosPelotaY;
+    private int [] puntosPaletaX;
+    private int [] puntosPaletaY;
+    private int [] bloquesColision;
+    private int lado;
+    private int i = 0;
+    private int colisionAnterior;
+    private int contadorRestante = 30;
+    private boolean [] colisionLateral;
+    
+    //Rotura de bloques
+    private boolean [] posiciones = {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
+    private boolean [] posiciones1 = {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
+    private int [] posicionesContadorToques = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    
+    //Modos
+    private boolean automatico = false;
+    
+    //Score
+    private int score = 0;
+    private int scoreAnterior = 0;
+    private boolean colorScore = false;
+    private String scoreString = "000000000";
+    private boolean menuScore = false;
+    private int mensajeDerrota = 0;  
+    
+    //Menu
+    private int seleccionPelota = 0;
+    private int seleccionPaleta = 1;
+    private int seleccionMenu = 0;
+    private boolean skins = true;
+    private boolean menuPrincipal = true;
+    private boolean dibujarMenu = true;
+    private int contadorColor = 0;
+    
+    //Tiempo
+    private float sumatoria = 0;
+    private int [] tt = {0,0,0};
+    
+    //Teclado
+    private int dato;
+    
+    //Imagenes
+    public Imagenes imagenes = new Imagenes();
+    public List<BufferedImage> dibujos = imagenes.cargarImagenes();
+    
+    //Velocidad de juego
+    private int threadVelocidad = 9;
+    
+    //Sistema Operativo
+    private int fuente = 36;
+    
+    /*CONSTRUCTORES*/
+    
     public Ventana(String nombre){
         //Creador de ventana
         setTitle(nombre);
@@ -68,68 +163,14 @@ public class Ventana extends JFrame /*implements Runnable*/{
         setVisible(true);       
     }
     
-    //Main
+    /*FUNCIONES*/
+    
     public static void main(String[] args) throws InterruptedException{
         //Creacion de objeto ventana
         Ventana ventana = new Ventana("Brick Breaker");
         //Inicia el ciclo del juego
-        ventana.ciclo();
-        
-        
-        
+        ventana.ciclo(); 
     }
-    
-    int xPelota = 387;
-    int yPelota = 410; //410
-    int random;
-    int contador = 0;
-    boolean direccion = true;
-    boolean movX = true;
-    boolean movY = true;
-    
-    int xPaleta = 346;
-    int yPaleta = 430;
-    
-    int contadorNivel = 1;
-    int nivel = 1;
-    int nivelesHechos = 1;
-    
-    int [] xBloques0 = {20,90,165,235,325,398,488,558,633,703};
-    int [] yBloques0 = {30,55,80};
-    
-    int [] xBloques1 = {20,90,165,235,325,398,488,558,633,703};
-    int [] yBloques2 = {30,55,80};
-    
-    public final int limitesX [] = {15,778};
-    public final int limitesY [] = {15,456};
-    
-    private int tamañoPelota = 10;
-    private int [] puntosPelotaX;
-    private int [] puntosPelotaY;
-    private int [] puntosPaletaX;
-    private int [] puntosPaletaY;
-    private int [] bloquesColision;
-    private boolean [] posiciones = {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
-    private boolean [] posiciones1 = {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
-    private int [] posicionesContadorToques = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    private boolean piso = true;
-    private boolean paletaMov = true;
-    private int lado;
-    private int vidas = 4;
-    private boolean [] vecesVidas = {true,true,true,true};
-    //MENU
-    private int seleccionPelota = 0;
-    private int seleccionPaleta = 1;
-    private boolean automatico = false;
-    private int score = 0;
-    private int scoreAnterior = 0;
-    private boolean colorScore = false;
-    private String scoreString = "000000000";
-    private float sumatoria = 0;
-    private int seleccionMenu = 0;
-    private boolean skins = true;
-    private boolean pausa = false;
-    
     public void actualizarPaletaPausa(int dato){
         //System.out.println(vidas);
         if (piso){
@@ -218,9 +259,6 @@ public class Ventana extends JFrame /*implements Runnable*/{
         }
         dato = -1;
     }
-    
-    private int dato;
-    //Método utilizado para mover la paleta automaticamente
     public void moverPaletaComputadora(){
         dato = teclado.movimiento();
         xPaleta = xPelota - 45;
@@ -245,8 +283,6 @@ public class Ventana extends JFrame /*implements Runnable*/{
         }
         dato = -1;
     }
-    
-    //Método utilizado para mover la paleta
     public void moverPaleta(){
         dato = teclado.movimiento();
         if (!automatico){
@@ -309,16 +345,6 @@ public class Ventana extends JFrame /*implements Runnable*/{
             dato = -1;
         }
     }
-    
-    //Método actualizado para actualizar el dibujo durante -> ejecutar = true <-
-   
-    private int velocidad = 1;
-    private boolean [] colisionLateral;
-    
-    private int i = 0;
-    private int colisionAnterior;
-    private int contadorRestante = 30;    
-    
     public void reiniciar(){
         i = 0;
         contadorRestante = 30;
@@ -345,8 +371,6 @@ public class Ventana extends JFrame /*implements Runnable*/{
         paletaMov = true;   
         ejecutar = false;
     }
-    
-    
     public void actualizar(){                 
         if (i == 0){
             //System.out.println(colisionAnterior);
@@ -501,16 +525,8 @@ public class Ventana extends JFrame /*implements Runnable*/{
             }
         }
     }
-    
-    //Uso del timer
-    
-    Imagenes imagenes = new Imagenes();
-    List<BufferedImage> dibujos = imagenes.cargarImagenes();
-    private boolean menuPrincipal = true;
-    private boolean dibujarMenu = true;
-    private int contadorColor = 0;
-    
     public void dibujar(){
+        System.out.println(fuente);
         buffer = canvas.getBufferStrategy();
         if (buffer == null){
             canvas.createBufferStrategy(3);
@@ -800,15 +816,6 @@ public class Ventana extends JFrame /*implements Runnable*/{
         buffer.show();
         
     }
-    
-    private int [] tt = {0,0,0};
-    private boolean menuScore = false;
-    SaveScore sc = new SaveScore();
-    private int seleccionScore = 0;
-    private int mensajeDerrota = 0;    
-    private int threadVelocidad = 9;
-    private int fuente = 36;
-        
     private int SO(){
         try{
             String so = System.getProperty("os.name");
@@ -830,8 +837,6 @@ public class Ventana extends JFrame /*implements Runnable*/{
             return 2;
         }
     }
-    
-    //Ejecución
     public void ciclo() throws InterruptedException {
                
         long ahora;
@@ -841,21 +846,22 @@ public class Ventana extends JFrame /*implements Runnable*/{
         //Ciclo infinito que no puede ser detenido
         boolean ciclo = true;
         
-        while (menuPrincipal){
-            if (verificarSO == 0){
-                if (SO() == 1){
-                    fuente = 46;
+        if (verificarSO == 0){
+            if (SO() == 1){
+                fuente = 46;
+            }
+            else{
+                if (SO() == 2){
+                    fuente = 36;
                 }
                 else{
-                    if (SO() == 2){
-                        fuente = 36;
-                    }
-                    else{
-                        fuente = 36;
-                    }
+                    fuente = 36;
                 }
-                verificarSO++;
             }
+            verificarSO++;
+        }
+        
+        while (menuPrincipal){            
             
             int dato = teclado.movimiento();
             dibujar();
@@ -991,28 +997,6 @@ public class Ventana extends JFrame /*implements Runnable*/{
                             menuScore = true;
                             
                             while (menuScore){
-                                if (dato == 6){
-                                    if (seleccionScore < 5){
-                                        seleccionScore++;
-                                    }
-                                    else{
-                                        if(seleccionScore == 5){
-                                            seleccionScore = 0;
-                                        }
-                                    }
-                                }
-                                else {
-                                    if (dato == 7){
-                                        if (seleccionScore > 0){
-                                            seleccionScore--;
-                                        }
-                                        else{
-                                            if(seleccionScore == 0){
-                                                seleccionScore = 5;
-                                            }
-                                        }
-                                    }
-                                }
                                 dibujar();
                                 mensajeDerrota++;
                                 if (mensajeDerrota == 60){
