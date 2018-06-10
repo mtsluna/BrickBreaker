@@ -348,94 +348,143 @@ public class Ventana extends JFrame{
         //La variable dato se mantiene con un valor no usado
         dato = -1;
     }
+    
+    //moverPaleta <- TERMINADO Y LIMPIADO
     public void moverPaleta(){
+        //dato se iguala a la devolucion del metodo movimiento
         dato = teclado.movimiento();
+        //Si el automatico esta desactivado
         if (!automatico){
+            //Si se pulsa flecha izquierda
             if (dato == 1){
+                //Si la paleta es mayor al limite[1]
                 if (xPaleta >= limitesX[1] - 100 || xPaleta >= limitesX[1] - 110){
+                    //Si la paleta no es igual al limite - 100
                     if (xPaleta != limitesX[1] - 100){
+                        //Se le asigna a xPaleta el valor de xPaleta mas el limite menos su valor actual
                         xPaleta = xPaleta + ((limitesX[1]-100) - xPaleta);
                     }
                 }
+                //Si la pelota no es mayor al limite
                 else{
+                    //Se le suma +12 por cada pulsacion o tick
                     xPaleta = xPaleta + 12;
                 }            
             }
+            //Sino
             else {
+                //Si se pulsa la flecha izquierda
                 if (dato == 2){
+                    //Si xPaleta es menor al limite[0]-15
                     if (xPaleta <= limitesX[0]+15){
+                        //Si xPaleta no esta exactamente en el limite
                         if (xPaleta != limitesX[0]){
+                            //Se iguala a xPaleta, xPaleta - su posicion actual menos el limite
                             xPaleta = xPaleta - (xPaleta - limitesX[0]);
                         }
                     }
+                    //Si xPaleta no es menor
                     else{
+                        //Se le resta 12 por cada tick o pulsación
                         xPaleta = xPaleta - 12;
                     }
                 }
+                //Sino
                 else{
+                    //Si se pulsa espacio
                     if (dato == 3){
+                        //Se detiene la ejecución del juego
                         ejecutar = false;
+                        //Y la paleta queda inmovible
                         paletaMov = false;
                     }
+                    //Sino
                     else {
+                        //Si se presiona A o a
                         if (dato == 4){
+                            //Se activa el automatico
                             automatico = true;
                         }
                     }
                 }
             }
+            //El valor de dato se mantiene siempre en un valor que no este en uso
             dato = -1;
         }
+        //Sino, si esta en automatico
         else {
+            //xPaleta sigue el valor de xPelota - 45
             xPaleta = xPelota - 45;
+            //Si xPaleta es mayor que el limite[1] - 100
             if (xPaleta >= limitesX[1] - 100){
+                //xPaleta toma el valor de limite[1] - 100
                 xPaleta = limitesX[1] - 100;
             }
+            //Sino
             else{
+                //Si xPaleta es menor o igual que el limite[0} mas 15
                 if (xPaleta <= limitesX[0]+15){
+                    //Si xPaleta - 15 es menor que 45
                     if ((xPaleta-15) < 45){
+                        //xPaleta toma el valor de si mismo menos su valor restado en 15
                         xPaleta = xPaleta - (xPaleta-15);
                     }   
                 }
             }
+            //Si se pulsa espacio
             if (dato == 3){
+                //Se detiene el juego
                 ejecutar = false;
+                //La paleta queda inmovible
                 paletaMov = false;
             }
+            //Sino
             else {
+                //Si se pulsa A o a
                 if (dato == 4){
+                    //Se desactiva el automatico
                     automatico = false;
                 }
             }
+            //La variable dato toma un valor no utilizado.
             dato = -1;
         }
     }
+    
+    //reiniciar <- TERMINADO Y LIMPIADO
     public void reiniciar(){
+        //Se reinician las variables de control a su estado original para dar un cambio de nivel
         i = 0;
         contadorRestante = 30;
         velocidad = 1;
         
         contador = 0;
+        //Se reinicia la pelota y paleta
         direccion = true; movX = true; movY = true;
         xPelota = 387; yPelota = 410; xPaleta = 346; yPaleta = 430;
 
+        //Se suma un nivelHecho y se sortea la dificultad nueva
         nivel = (int)(Math.random()*2)+1;
         nivelesHechos++;        
         
+        //Se reestablecen los bloques
         for (int j = 0; j < posiciones.length; j++){
             posiciones[j] = true;
             posiciones1[j] = true;
             posicionesContadorToques[j] = 0;
         }     
         
+        //Se reestablecen las habilitaciones de primeros saques
         for (int j = 0; j < vecesVidas.length; j++){
             vecesVidas[j] = true;
         }
         
+        //Se pausa, se habilita la paleta y se desactiva el piso
         piso = false;
         paletaMov = true;   
         ejecutar = false;
     }
+    
     public void actualizar(){                 
         if (i == 0){
             colisionAnterior = -1;
@@ -873,26 +922,38 @@ public class Ventana extends JFrame{
         buffer.show();
         
     }
+    
+    //SO <- TERMINADO Y LIMPIADO
     private int SO(){
+        //Se encierra ante excepciones
         try{
+            //Se captura el nombre del sistema operativo
             String so = System.getProperty("os.name");
 
+            //Si es windows retorna 1
             if (so.toLowerCase().trim().startsWith("windows") || so.toLowerCase().trim().startsWith("win")){
                 return 1;
             }
+            //Sino
             else{
+                //Si es linux retorna 2
                 if (so.toLowerCase().trim().startsWith("linux") || so.toLowerCase().trim().startsWith("lin")){
                     return 2;
                 }
+                //Sino
                 else{
+                    //Tambien retorna 2
                     return 2;
                 }
             }
         }
+        //Ante captura de expeciones
         catch(Exception e){
+            //Tambien retorna 2
             return 2;
         }
     }
+    
     public void ciclo() throws InterruptedException {
                
         long ahora;
