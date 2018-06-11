@@ -135,7 +135,7 @@ public class Ventana extends JFrame{
     private int threadVelocidad = 9;
     
     //Sistema Operativo
-    private int fuente = 36;
+    private int fuente = 46;
     
     /*CONSTRUCTORES*/
     
@@ -1077,39 +1077,8 @@ public class Ventana extends JFrame{
         //Se muestra el buffer
         buffer.show();
         
-    }
-    
-    //SO <- TERMINADO Y LIMPIADO
-    private int SO(){
-        //Se encierra ante excepciones
-        try{
-            //Se captura el nombre del sistema operativo
-            String so = System.getProperty("os.name");
-
-            //Si es windows retorna 1
-            if (so.toLowerCase().trim().startsWith("windows") || so.toLowerCase().trim().startsWith("win")){
-                return 1;
-            }
-            //Sino
-            else{
-                //Si es linux retorna 2
-                if (so.toLowerCase().trim().startsWith("linux") || so.toLowerCase().trim().startsWith("lin")){
-                    return 2;
-                }
-                //Sino
-                else{
-                    //Tambien retorna 2
-                    return 2;
-                }
-            }
-        }
-        //Ante captura de expeciones
-        catch(Exception e){
-            //Tambien retorna 2
-            return 2;
-        }
-    }
-    
+    }   
+        
     //ciclo
     public void ciclo() throws InterruptedException {
         
@@ -1117,30 +1086,9 @@ public class Ventana extends JFrame{
         long ahora;
         long antes = System.nanoTime();
         //Variable para controlar el SO
-        int verificarSO = 0;
         
         //Ciclo infinito que no puede ser detenido
         boolean ciclo = true;
-        
-        //Si el sistema operativo es 0 = Windows
-        if (verificarSO == 0){
-            if (SO() == 1){
-                //Setea tamaño de fuente a 46
-                fuente = 46;
-            }
-            //Sino lo considera como Linux o alternativa
-            else{
-                //Sino setea funte en 36
-                if (SO() == 2){
-                    fuente = 36;
-                }
-                else{
-                    fuente = 36;
-                }
-            }
-            //Se suma y no se vuelve a verificar el SO
-            verificarSO++;
-        }
         
         //Mientras menuPrincipal sea true
         while (menuPrincipal){   
