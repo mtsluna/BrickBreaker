@@ -1125,17 +1125,17 @@ public class Ventana extends JFrame{
         //Si el sistema operativo es 0 = Windows
         if (verificarSO == 0){
             if (SO() == 1){
-                //Setea tamaño de fuente a 36
+                //Setea tamaño de fuente a 46
                 fuente = 36;
             }
             //Sino lo considera como Linux o alternativa
             else{
-                //Sino setea funte en 6
+                //Sino setea funte en 36
                 if (SO() == 2){
-                    fuente = 46;
+                    fuente = 36;
                 }
                 else{
-                    fuente = 46;
+                    fuente = 36;
                 }
             }
             //Se suma y no se vuelve a verificar el SO
@@ -1240,7 +1240,7 @@ public class Ventana extends JFrame{
                             JOptionPane.showMessageDialog(null, "Información: \n"
                                                               + "Bienvenido a Brick Breaker!!!\n\n"
                                                               + "No hay reglas, solo trate de que la bola\n"
-                                                              + "no caiga en el fondo del ring de juego.\n\n"
+                                                              + "no caiga al fondo del ring de juego.\n\n"
                                                               + "=== Niveles ===\n"
                                                               + "Basicamente son infinitos, disfruta!!!\n\n"
                                                               + "=== Dificultades ===\n"
@@ -1249,9 +1249,9 @@ public class Ventana extends JFrame{
                                                               + "EXTRA: En todos los niveles la pelota se acelera\n"
                                                               + "al romper ciertos bloques así que ten cuidado!!!\n\n"
                                                               + "=== Puntos por bloque ===\n"
-                                                              + "Verde: 10pts (normal) o 70pts (bonus de la suerte)\n"
-                                                              + "Rosa: 20pts (normal) o 140pts (bonus de la suerte)\n"
-                                                              + "Amarillo: 30pts (normal) o 210pts (bonus de la suerte)\n\n"
+                                                              + "Inferior: 10pts (normal) o 70pts (bonus de la suerte)\n"
+                                                              + "Central: 20pts (normal) o 140pts (bonus de la suerte)\n"
+                                                              + "Superior: 30pts (normal) o 210pts (bonus de la suerte)\n\n"
                                                               + "=== Controles ===\n"
                                                               + "[<-] Izquierda || [ENTER] Seleccionar || Derecha[->]\n"
                                                               + "[A] Modo Automatico [ESPACIO] PAUSA E INICIAR\n"
