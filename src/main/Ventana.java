@@ -1126,7 +1126,7 @@ public class Ventana extends JFrame{
         if (verificarSO == 0){
             if (SO() == 1){
                 //Setea tamaño de fuente a 46
-                fuente = 36;
+                fuente = 46;
             }
             //Sino lo considera como Linux o alternativa
             else{
