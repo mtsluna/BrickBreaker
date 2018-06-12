@@ -9,7 +9,7 @@ package main;
 import Interacciones.Colisiones;
 import Interacciones.Imagenes;
 import Interacciones.Teclado;
-import Adicionales.SaveScore;
+import Adicionales.Score;
 import Adicionales.Velocidad;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -19,7 +19,9 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import javax.swing.Icon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 /**
@@ -599,7 +601,7 @@ public class Ventana extends JFrame{
                 //Se suma score
                 scoreAnterior = score;
                 //Se pasa por referencia el score
-                score = SaveScore.contadorScore(score, bloquesColision[0]);
+                score = Score.contadorScore(score, bloquesColision[0]);
                 
                 //Si el score actual menos el anterior es mayor que 35
                 if ((score-scoreAnterior)>35){
@@ -608,7 +610,7 @@ public class Ventana extends JFrame{
                 }
                 
                 //Se pasa el score al String
-                scoreString = SaveScore.completarScore(score);
+                scoreString = Score.completarScore(score);
                 //Lleva la cuenta de los bloques faltantes
                 contadorRestante--;
                 //Se determina la velocidad
@@ -699,14 +701,14 @@ public class Ventana extends JFrame{
                             //Guarda el score anterior
                             scoreAnterior = score;
                             //Pasa el nuevo score
-                            score = SaveScore.contadorScore(score, bloquesColision[0]);
+                            score = Score.contadorScore(score, bloquesColision[0]);
                             //Si el score actual menos el anterior es mayor que 35
                             if ((score-scoreAnterior)>35){
                                 //Hay BONUS de score y lo dibuja
                                 colorScore = true;
                             }
                             //El score es pasado a String y completado
-                            scoreString = SaveScore.completarScore(score);
+                            scoreString = Score.completarScore(score);
                             //Se resta un bloque
                             contadorRestante--;
                             //Se determina una nueva o misma velocidad
@@ -1181,13 +1183,13 @@ public class Ventana extends JFrame{
                 try{
                     //Mostrar los menu desplegables y sus respectivos switch
                     String [] seleccion2 = {"Mirar la información","Ajustar el rendimiento"};        
-                    String info = (String) JOptionPane.showInputDialog(null, "Que deseas realizar...?",
-                    "INFO", JOptionPane.QUESTION_MESSAGE, null, seleccion2, seleccion2[0]);
+                    int info = JOptionPane.showOptionDialog(null, "Que deseas realizar...?",
+                    "INFO", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, seleccion2, seleccion2[0]);
                     switch(info){
-                        case "Mirar la información":
+                        case 0:
                             JOptionPane.showMessageDialog(null, "Información: \n"
                                                               + "Bienvenido a Brick Breaker!!!\n\n"
-                                                              + "No hay reglas, solo trate de que la bola\n"
+                                                              + "No hay reglas, solo trata de que la bola\n"
                                                               + "no caiga al fondo del ring de juego.\n\n"
                                                               + "=== Niveles ===\n"
                                                               + "Basicamente son infinitos, disfruta!!!\n\n"
@@ -1206,7 +1208,7 @@ public class Ventana extends JFrame{
                                                               + "[/\\] Arriba || [\\/] Abajo\n"
                                     + "");
                             break;
-                        case "Ajustar el rendimiento":
+                        case 1:
                             String [] cpu = {"Muy alto","Alto","Medio","Bajo","Muy bajo"};
                             String procesamiento = (String) JOptionPane.showInputDialog(null, "Selecciona el nivel de procesamiento de tu PC...",
                             "AJUSTAR EL RENDIMIENTO", JOptionPane.QUESTION_MESSAGE, null, cpu, cpu[2]);
@@ -1316,7 +1318,7 @@ public class Ventana extends JFrame{
                                 if (mensajeDerrota == 60){
                                     //Se muestra
                                     JOptionPane.showMessageDialog(this, "GRACIAS POR JUGAR!!! TU SCORE FUE DE:\n"
-                                                                                 +scoreString+" PUNTOS"); 
+                                                                       +"                 "+scoreString+" PUNTOS");
                                     //El programa llega a su fin y se cierra
                                     System.exit(0);
                                 }

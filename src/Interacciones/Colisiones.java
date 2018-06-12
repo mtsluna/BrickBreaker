@@ -84,6 +84,7 @@ public class Colisiones {
     //      x=0 y=10    x=10 y=10
     //      L.I.I       L.I.D
     
+    //Detecta la colision de los bloques y devuelve el número y el tipo de impacto
     public static int [] bloques(int [] puntosPelotaX,int [] puntosPelotasY, int [] xBloques,int [] yBloques){
         int [] puntosBloqueX;
         int c = 0;
@@ -110,6 +111,7 @@ public class Colisiones {
         return devolucion;
     }
     
+    //Devuelve el tipo de impacto lateral que se produce
     public static boolean [] lateral(int [] puntosPelotaX,int [] puntosPelotasY, int [] xBloques,int [] yBloques){
         boolean [] lateral = {false,false};
         int [] puntosBloqueY;
